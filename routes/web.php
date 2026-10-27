@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\AccesoController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+Route::redirect('/', '/login');
 
 Route::middleware('guest')->group(function () {
     //ruta -> /login: lo que el usuario ve. 'mostrarLogin' : metodo, 'login' apodo en el codigo
@@ -17,11 +17,10 @@ Route::middleware('auth')->group(function () {
 });
 
 
-//panel de usuarioos
+//panel de usuarios
 Route::middleware('auth')->prefix('panel')->name('panel.')->group(function () {
     Route::view('/superusuario', 'panel.superusuario')->name('superusuario');
-    Route::view('/administrador','panel.administrador')->name('administrador');
-    Route::view('/docente','panel.docetnte' )->name('docente');
+    Route::view('/administrador', 'panel.administrador')->name('administrador');
+    Route::view('/docente', 'panel.docente')->name('docente');
     Route::view('/alumno', 'panel.alumno')->name('alumno');
 });
-
