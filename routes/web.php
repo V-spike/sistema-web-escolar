@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContrasenaController;
 
 Route::redirect('/', '/login');
 
@@ -19,6 +20,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AccesoController::class, 'salir'])->name('logout');
+    Route::get('/cambiar-contrasena', [ContrasenaController::class, 'mostrarCambiar'])->name('contrasena.editar');
+    Route::post('/cambiar-contrasena', [ContrasenaController::class, 'actualizar'])->name('contrasena.actualizar');
+
 });
 
 
