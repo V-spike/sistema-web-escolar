@@ -28,3 +28,4 @@ Route::middleware('auth')->prefix('panel')->name('panel.')->group(function () {
     Route::view('/docente', 'panel.docente')->name('docente');
     Route::view('/alumno', 'panel.alumno')->name('alumno');
 });
+
