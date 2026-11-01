@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccesoController;
+use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -9,6 +10,9 @@ Route::middleware('guest')->group(function () {
     //ruta -> /login: lo que el usuario ve. 'mostrarLogin' : metodo, 'login' apodo en el codigo
     Route::get('/login', [AccesoController::class, 'mostrarLogin'])->name('login');
     Route::post('/login', [AccesoController::class, 'entrar']);
+    Route::get('/olvide-contrasena', [RecuperacionController::class, 'mostrarFormulario'])->name('password.request');
+    Route::post('/olvide-contrasena', [RecuperacionController::class, 'enviarEnlace'])->name('password.email');
+    Route::get('/restablecer/{token}', fn () => 'pendiente paso 2')->name('password.reset');
 });
 
 
