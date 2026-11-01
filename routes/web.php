@@ -12,7 +12,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AccesoController::class, 'entrar']);
     Route::get('/olvide-contrasena', [RecuperacionController::class, 'mostrarFormulario'])->name('password.request');
     Route::post('/olvide-contrasena', [RecuperacionController::class, 'enviarEnlace'])->name('password.email');
-    Route::get('/restablecer/{token}', fn () => 'pendiente paso 2')->name('password.reset');
+    Route::get('/restablecer/{token}', [RecuperacionController::class, 'mostrarRestablecer'])->name('password.reset');
+    Route::post('/restablecer', [RecuperacionController::class, 'restablecer'])->name('password.update');
 });
 
 
