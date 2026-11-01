@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
 });
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'sin-cache'])->group(function () {
     Route::post('/logout', [AccesoController::class, 'salir'])->name('logout');
     Route::get('/cambiar-contrasena', [ContrasenaController::class, 'mostrarCambiar'])->name('contrasena.editar');
     Route::post('/cambiar-contrasena', [ContrasenaController::class, 'actualizar'])->name('contrasena.actualizar');
@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
 
 //panel de usuarios
-Route::middleware('auth')->prefix('panel')->name('panel.')->group(function () {
+Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group(function () {
     Route::view('/superusuario', 'panel.superusuario')->name('superusuario');
     Route::view('/administrador', 'panel.administrador')->name('administrador');
     Route::view('/docente', 'panel.docente')->name('docente');

@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'rol' => \App\Http\Middleware\VerificarRol::class,
+            'sin-cache' => \App\Http\Middleware\SinCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
