@@ -17,7 +17,7 @@
 
         {{-- Mensaje de error de ese campo, si lo hay --}}
         @error('email')
-            <p>{{ $message }}</p>
+            <div class="mensaje mensaje--error">{{ $message }}</div>
         @enderror
         <label for="clave">Contraseña nueva</label>
 
@@ -28,7 +28,7 @@
         <input type="password" id="clave2" name="password_confirmation" required>
 
         @error('password')
-            <p>{{ $message }}</p>
+            <div class="mensaje mensaje--error">{{ $message }}</div>
         @enderror
 
         <button type="submit">Guardar contraseña</button>
