@@ -9,7 +9,7 @@
     
     {{-- Aviso del controlador --}}
     @if (session('estado'))
-        <p>{{ session('estado') }}</p>
+        <div class="mensaje mensaje--exito">{{ session('estado') }}</div>
     @endif
 
     {{-- Apunta a una ruta con su nombre --}}
@@ -20,7 +20,7 @@
 
         {{-- Mensaje de error de ese campo, si lo hay --}}
         @error('email')
-            <p>{{ $message }}</p>
+            <div class="mensaje mensaje--error">{{ $message }}</div>
         @enderror
 
         <button type="submit">Enviar enlace</button>

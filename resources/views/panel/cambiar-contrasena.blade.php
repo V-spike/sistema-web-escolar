@@ -17,14 +17,15 @@
 
         {{-- Mensaje de error de ese campo, si lo hay --}}
         @error('password_actual')
-            <p>{{ $message }}</p>
+            <div class="mensaje mensaje--error">{{ $message }}</div>
         @enderror
+
         <label for="password">Contraseña nueva</label>
         <input type="password" id="password" name="password" required>
 
         {{-- Mensaje de error de ese campo, si lo hay --}}
         @error('password')
-            <p>{{ $message }}</p>
+            <div class="mensaje mensaje--error">{{ $message }}</div>
         @enderror
         <label for="password_confirmation">Confirma tu nueva contraseña</label>
         <input type="password" id="password_confirmation" name="password_confirmation" required>
