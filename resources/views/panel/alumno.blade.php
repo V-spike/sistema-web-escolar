@@ -3,10 +3,7 @@
 @section('titulo', 'Panel del alumno')
 
 @section('menu')
-    <a href="#" class="menu__opcion menu__opcion--activa">Inicio</a>
-    <span class="menu__opcion menu__opcion--pendiente">Mi horario</span>
-    <span class="menu__opcion menu__opcion--pendiente">Mis calificaciones</span>
-    <span class="menu__opcion menu__opcion--pendiente">Cambiar contraseña</span>
+    @include('panel.menu')
 @endsection
 
 @section('contenido')

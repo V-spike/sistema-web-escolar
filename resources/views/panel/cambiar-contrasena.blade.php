@@ -3,8 +3,7 @@
 @section('titulo', 'Cambiar contraseña')
 
 @section('menu')
-    <a href= "{{ route('panel.' . auth()->user()->rol) }}" class= "menu__opcion">Volver a mi panel</a>
-
+    @include('panel.menu')
 @endsection
 
 @section('contenido')
