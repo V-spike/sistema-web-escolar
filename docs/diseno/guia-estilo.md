@@ -138,3 +138,94 @@ Cuando la pantalla mide 700 px de ancho o menos:
 - `.menu` se convierte en una fila horizontal con desplazamiento lateral, y su borde pasa de la derecha a la parte inferior.
 
 No hace falta agregar clases nuevas: el cambio es automático al usar las clases anteriores.
+
+
+
+## CLASES CATALOGOS 
+1. Catálogos: barra de título y acciones
+# Clase .barra-catalogo
+Esta lase organiza horisontalmente los elementos que se encuentran dentro de la barra del catalogo, por ejemplo, un titulo y un boton para gregar un nuevo registro. 
+
+Selector .barra-catalogo h1
+Selecciona unicamente las etiquetas <h1> que esten dentro de un elemento con la clase .barra-catalogo
+    -margin: 0; elimina los margenes predeterminados del encabezado.
+    - Evita que el titulo tenga espacios adicionales que puedan desalinearlo con el boton. 
+
+# Clase .btn--enlace
+Sirve para dar apariencia de boton a un enlace HTML(<a>).
+
+2. Catálogos: tabla del listado
+Esta seccion se encarga de dar formato a las tablas donde se muestran los registros de un catálogo.
+# Clase .tabla-contenedor
+Es un contenedro que envuelve la tabla para controlar su apariencia y comportamiento.
+
+# Clase .tabla-catalogo
+Aplica el diseño general a la tabla
+    - width: 100%; hace que ocupe todo el ancho disponible.
+    - border-collapse: collapse; combina los bordes de las celdas para evitar separaciones dobles.
+
+# Clase .tabla-catalogo__fila--baja
+Sirve para identificar visualmente una fila que representa un registro dado de baja.
+- color: #9AA5B1; cambia el texto a un tono gris.
+- Permite diferenciar los registros inactivos de los activos.
+
+# Clase .tabla-catalogo__acciones
+Organiza los botones de acción de cada fila de la tabla.
+
+Por ejemplo, los botones de editar y eliminar.
+- display: flex; coloca los botones en una distribución flexible.
+- gap: .5rem; establece separación entre ellos.
+- align-items: center; los alinea verticalmente.
+
+
+3. Etiquetas de estado
+Estas clases permiten mostrar visualmente el estado de un registro mediante pequeñas etiquetas de colores.
+
+# Clase .etiqueta
+Es la clase base. Define el formato que compartirán todas las etiquetas.
+
+# Clase .etiqueta--activa
+Representa un registro activo.
+- Fondo verde claro.
+- Texto verde, utilizando la variable --color-exito.
+
+# Clase .etiqueta--baja
+Representa un registro dado de baja.
+- Fondo rojo claro.
+- Texto rojo, utilizando la variable --color-error.
+
+# Clase .etiqueta--terminado
+Representa un registro que ha finalizado o terminado.
+- Fondo gris claro.
+- Texto gris oscuro.
+
+4. Botones pequeños de la tabla
+# Clase .btn--chico
+Modifica el tamaño de un botón para que ocupe menos espacio.
+- padding: reduce el espacio interno.
+- font-size: disminuye ligeramente el tamaño del texto.
+Es especialmente útil cuando hay varios botones dentro de una tabla.
+
+# Clase .btn--peligro
+Se utiliza para identificar visualmente acciones peligrosas o destructivas, como eliminar un registro.
+- background: #fff; establece el fondo blanco.
+- color: var(--color-error); utiliza el color de error para el texto.
+- border: 1px solid var(--color-error); agrega un borde del mismo color.
+Generalmente se utiliza para botones de eliminación.
+
+5. Formulario de catálogo
+Esta sección define la apariencia de los formularios utilizados para agregar o modificar registros.
+# Clase .formulario
+La propiedad max-width permite que el formulario no se extienda demasiado en pantallas grandes.
+
+# Clase .formulario__acciones
+Organiza los botones que aparecen al final del formulario.
+
+Por ejemplo:
+- Guardar.
+- Cancelar.
+Sus propiedades permiten colocarlos en una misma fila, mantener una separación y agregar espacio respecto a los campos anteriores.
+
+# Clase .campo__ayuda
+Se utiliza para mostrar información adicional o instrucciones debajo de un campo del formulario.
+

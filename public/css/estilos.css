@@ -45,6 +45,36 @@ body { margin: 0; font-family: var(--fuente); color: var(--color-texto); backgro
 .menu__opcion--pendiente { color: #9AA5B1; cursor: not-allowed; }
 .contenido { padding: 1.5rem; }
 
+/* Catálogos: barra de título y acciones */
+.barra-catalogo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.barra-catalogo h1 { margin: 0; }
+.btn--enlace { display: inline-block; text-decoration: none; width: auto; }
+
+/* Catálogos: tabla del listado */
+.tabla-contenedor { overflow-x: auto; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio); }
+.tabla-catalogo { width: 100%; border-collapse: collapse; }
+.tabla-catalogo th, .tabla-catalogo td { padding: .6rem .75rem; text-align: left; border-bottom: 1px solid var(--color-borde); }
+.tabla-catalogo th { background: var(--color-primario-claro); color: var(--color-primario); }
+.tabla-catalogo__fila--baja { color: #9AA5B1; }
+.tabla-catalogo__acciones { display: flex; gap: .5rem; align-items: center; }
+.tabla-catalogo__acciones form { margin: 0; }
+
+/* Etiquetas de estado */
+.etiqueta { display: inline-block; padding: .1rem .5rem; border-radius: 999px; font-size: .85rem; font-weight: 600; }
+.etiqueta--activa { background: #E8F5E9; color: var(--color-exito); }
+.etiqueta--baja { background: #FDECEA; color: var(--color-error); }
+.etiqueta--terminado { background: #EEF1F5; color: #5A6778; }
+
+/* Botones pequeños de la tabla */
+.btn--chico { padding: .3rem .7rem; font-size: .9rem; }
+.btn--peligro { background: #fff; color: var(--color-error); border: 1px solid var(--color-error); }
+
+/* Formulario de catálogo */
+.formulario { background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio); padding: 1.25rem; max-width: 520px; }
+.formulario__acciones { display: flex; gap: .75rem; margin-top: 1.25rem; }
+.formulario__acciones .btn--primario { width: auto; }
+.campo__ayuda { font-size: .85rem; color: #5A6778; margin: .25rem 0 0; }
+
 /* Celular */
 @media (max-width: 700px) {
     .distribucion { grid-template-columns: 1fr; }
