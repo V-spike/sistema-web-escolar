@@ -4,6 +4,8 @@ use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContrasenaController;
+// use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\AulaController;
 
 Route::redirect('/', '/login');
 
@@ -17,14 +19,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/restablecer', [RecuperacionController::class, 'restablecer'])->name('password.update');
 });
 
-
 Route::middleware(['auth', 'sin-cache'])->group(function () {
     Route::post('/logout', [AccesoController::class, 'salir'])->name('logout');
     Route::get('/cambiar-contrasena', [ContrasenaController::class, 'mostrarCambiar'])->name('contrasena.editar');
     Route::post('/cambiar-contrasena', [ContrasenaController::class, 'actualizar'])->name('contrasena.actualizar');
-
 });
-
 
 //panel de usuarios
 Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group(function () {
@@ -34,3 +33,14 @@ Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group
     Route::view('/alumno', 'panel.alumno')->name('alumno');
 });
 
+// ---------- Sprint 3: administrador y superusuario ----------
+Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
+    // HU-05 · Marcos: materias
+    // Si te marca error de que MateriaController no existe, ponle // a las 2 líneas de abajo
+   // Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
+    //Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
+
+    // HU-06 · Marcos: aulas
+    Route::resource('aulas', AulaController::class)->except(['show', 'destroy']);
+    Route::patch('aulas/{aula}/estado', [AulaController::class, 'cambiarEstado'])->name('aulas.estado');
+});
