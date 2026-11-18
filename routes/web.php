@@ -4,6 +4,7 @@ use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContrasenaController;
+use App\Http\Controllers\MateriaController;
 
 Route::redirect('/', '/login');
 
@@ -42,6 +43,8 @@ Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->g
 // ---------- Sprint 3: administrador y superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
     // HU-05 · Marcos: materias
+    Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
+    Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
 
     // HU-06 · Marcos: aulas
 
