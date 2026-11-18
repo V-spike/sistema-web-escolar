@@ -1,12 +1,23 @@
-{{-- Menú compartido de los 4 paneles y de "Cambiar contraseña".
-     Muestra las opciones según el rol del usuario y resalta la página en la que está. --}}
+{{-- Menú compartido de los paneles, catálogos y "Cambiar contraseña".
+     Muestra las opciones según el rol y resalta la sección en la que está el usuario. --}}
 @php
     $rol = auth()->user()->rol;
 
-    // Opciones que todavía no existen (se ven en gris y no se pueden presionar)
+    // [texto, nombre de ruta, patrón para resaltar]
+    $catalogos = [
+        ['Materias', 'materias.index', 'materias.*'],
+        ['Aulas', 'aulas.index', 'aulas.*'],
+        ['Semestres', 'semestres.index', 'semestres.*'],
+    ];
+
+    $listas = [
+        'superusuario'  => array_merge([['Administradores', 'administradores.index', 'administradores.*']], $catalogos),
+        'administrador' => $catalogos, // el administrador no ve "Administradores" (HU-03, criterio 4)
+    ][$rol] ?? [];
+
     $pendientes = [
-        'superusuario'  => ['Administradores', 'Materias', 'Aulas', 'Semestres', 'Grupos', 'Alumnos', 'Docentes'],
-        'administrador' => ['Materias', 'Aulas', 'Semestres', 'Grupos', 'Alumnos', 'Docentes'],
+        'superusuario'  => ['Grupos', 'Alumnos', 'Docentes'],
+        'administrador' => ['Grupos', 'Alumnos', 'Docentes'],
         'docente'       => ['Mi horario', 'Calificaciones'],
         'alumno'        => ['Mi horario', 'Mis calificaciones'],
     ][$rol] ?? [];
@@ -14,6 +25,16 @@
 
 <a href="{{ route('panel.' . $rol) }}"
    @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('panel.*')])>Inicio</a>
+
+@foreach ($listas as [$texto, $ruta, $patron])
+    {{-- Si la ruta todavía no está en main, la opción se ve en gris en lugar de romper la página --}}
+    @if (\Illuminate\Support\Facades\Route::has($ruta))
+        <a href="{{ route($ruta) }}"
+           @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs($patron)])>{{ $texto }}</a>
+    @else
+        <span class="menu__opcion menu__opcion--pendiente">{{ $texto }}</span>
+    @endif
+@endforeach
 
 @foreach ($pendientes as $opcion)
     <span class="menu__opcion menu__opcion--pendiente">{{ $opcion }}</span>
