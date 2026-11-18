@@ -29,10 +29,15 @@ Route::middleware(['auth', 'sin-cache'])->group(function () {
 
 //panel de usuarios
 Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group(function () {
-    Route::view('/superusuario', 'panel.superusuario')->name('superusuario');
-    Route::view('/administrador', 'panel.administrador')->name('administrador');
-    Route::view('/docente', 'panel.docente')->name('docente');
-    Route::view('/alumno', 'panel.alumno')->name('alumno');
+    Route::view('/superusuario', 'panel.superusuario')->name('superusuario')->middleware('rol:superusuario');
+    Route::view('/administrador', 'panel.administrador')->name('administrador')->middleware('rol:administrador');
+    Route::view('/docente', 'panel.docente')->name('docente')->middleware('rol:docente');
+    Route::view('/alumno', 'panel.alumno')->name('alumno')->middleware('rol:alumno');
+});
+
+// ---------- Sprint 3: solo el superusuario ----------
+Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->group(function () {
+    // HU-03 · Axel: administradores
 });
 
 // ---------- Sprint 3: administrador y superusuario ----------
@@ -40,4 +45,8 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-05 · Marcos: materias
     Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
     Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
+
+    // HU-06 · Marcos: aulas
+
+    // HU-07 · Axel: semestres
 });
