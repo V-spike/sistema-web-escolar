@@ -7,6 +7,7 @@ use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
+use App\Http\Controllers\DisponibilidadController;
 
 Route::redirect('/', '/login');
 
@@ -58,4 +59,8 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
     Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
     Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
+
+    // HU-13 · Axel: disponibilidad del docente
+    Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
+    Route::put('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'update'])->name('docentes.disponibilidad.guardar');
 });
