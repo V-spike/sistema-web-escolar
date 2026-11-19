@@ -5,6 +5,8 @@ use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\SemestreController;
+use App\Http\Controllers\JornadaController;
 
 Route::redirect('/', '/login');
 
@@ -49,4 +51,11 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-06 · Marcos: aulas
 
     // HU-07 · Axel: semestres
+    Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
+    Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
+
+    // HU-12 · Axel: jornada (solo se editan las horas)
+    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
+    Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
+    Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
 });
