@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SemestreSeeder::class);
         $this->call(CatalogosSeeder::class);
         $this->call(FranjaSeeder::class);
+        $this->call(BloqueComunSeeder::class);
     }
 }

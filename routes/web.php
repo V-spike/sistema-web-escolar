@@ -8,6 +8,7 @@ use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\DisponibilidadController;
+use App\Http\Controllers\BloqueComunController;
 
 Route::redirect('/', '/login');
 
@@ -63,4 +64,9 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-13 · Axel: disponibilidad del docente
     Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
     Route::put('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'update'])->name('docentes.disponibilidad.guardar');
+
+    // HU-25 · Axel: bloques comunes
+    Route::get('bloques-comunes', [BloqueComunController::class, 'index'])->name('bloques-comunes.index');
+    Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
+    Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
 });
