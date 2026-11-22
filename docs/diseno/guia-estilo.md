@@ -229,3 +229,58 @@ Sus propiedades permiten colocarlos en una misma fila, mantener una separación 
 # Clase .campo__ayuda
 Se utiliza para mostrar información adicional o instrucciones debajo de un campo del formulario.
 
+## Cuadrícula semanal
+
+Vista parcial reutilizable que dibuja la semana escolar (días × franjas).
+Archivo: `resources/views/componentes/cuadricula.blade.php`
+
+La cuadrícula **no sabe qué va dentro de cada celda**: recorre las franjas y los días,
+y en cada cruce incluye la vista que le indiques. Así sirve para la disponibilidad
+(casillas), el editor del horario (materias) y la impresión.
+
+### Qué recibe
+
+| Variable  | Obligatoria | Qué es |
+|-----------|-------------|--------|
+| `franjas` | Sí | Colección de franjas **en orden**, incluidos los recesos. Cada una con `id`, `hora_inicio`, `hora_fin` y `es_receso`. |
+| `celda`   | Sí | Nombre de la vista que dibuja **una** celda (por ejemplo, `docentes._celda-disponibilidad`). |
+| `datos`   | No | Arreglo con lo que necesita la vista de la celda (por ejemplo, `['marcadas' => $marcadas]`). Si no se manda, es `[]`. |
+
+Los días salen de `config('escolar.dias')`. Si no existe, se usan de lunes a viernes.
+
+### Cómo se incluye
+
+```blade
+@include('componentes.cuadricula', [
+    'franjas' => $franjas,
+    'celda'   => 'docentes._celda-disponibilidad',
+    'datos'   => ['marcadas' => $marcadas],
+])
+```
+
+### Qué recibe la vista de la celda
+
+Cada celda recibe automáticamente:
+
+- `$dia`: número del día (1 = lunes … 5 = viernes)
+- `$franja`: la franja de esa fila
+- todo lo que venga en `datos` (en el ejemplo, `$marcadas`)
+
+Ejemplo mínimo de una vista de celda:
+
+```blade
+{{ $dia }}-{{ $franja->id }}
+```
+
+### Recesos
+
+Las franjas con `es_receso = true` se dibujan como una sola fila de lado a lado
+que dice "Receso". No llevan celdas, así que ahí no se pueden marcar casillas ni asignar materias.
+
+### Clases CSS (en `public/css/estilos.css`)
+
+| Clase | Uso |
+|-------|-----|
+| `.cuadricula` | La tabla. Ancho mínimo de 640px: en el celular se desliza dentro de `.tabla-contenedor`. |
+| `.cuadricula__hora` | Columna de la hora (96px). Se queda fija al deslizar. |
+| `.cuadricula__celda` | Cada celda de día
