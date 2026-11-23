@@ -5,6 +5,7 @@ use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\SemestreController;
 
 Route::redirect('/', '/login');
 
@@ -49,4 +50,6 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-06 · Marcos: aulas
 
     // HU-07 · Axel: semestres
+    Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
+    Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
 });
