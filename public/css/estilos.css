@@ -80,3 +80,51 @@ body { margin: 0; font-family: var(--fuente); color: var(--color-texto); backgro
     .distribucion { grid-template-columns: 1fr; }
     .menu { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--color-borde); }
 }
+/*Cuadrícula semanal (T-41) */
+.cuadricula {
+    width: 100%;
+    min-width: 640px;              /* en celular no se aplasta: se desliza */
+    border-collapse: collapse;
+    table-layout: fixed;           /* las 5 columnas de días miden lo mismo */
+    color: var(--color-texto);
+}
+
+.cuadricula th,
+.cuadricula td {
+    border: 1px solid var(--color-borde);
+    padding: 6px;
+}
+
+.cuadricula__hora {
+    width: 96px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    background: var(--color-fondo);
+    position: sticky;              /* se queda fija al deslizar */
+    left: 0;
+    z-index: 1;
+}
+
+.cuadricula__celda {
+    height: 48px;                  /* en tablas, height funciona como alto mínimo */
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cuadricula__receso {
+    background: #E9EDF2;           /* gris un poco más oscuro que --color-fondo */
+    color: #6B7280;
+    font-style: italic;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 2px 6px;
+}
+
+.cuadricula__celda--marcada {
+    background: var(--color-primario-claro);
+}
+
+.cuadricula__celda--choque {
+    background: #FDECEA;           /* rojo suave */
+    border-color: var(--color-error);
+}

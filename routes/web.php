@@ -4,7 +4,9 @@ use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\RecuperacionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContrasenaController;
-// use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\SemestreController;
+use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\AulaController;
 
 Route::redirect('/', '/login');
@@ -19,28 +21,44 @@ Route::middleware('guest')->group(function () {
     Route::post('/restablecer', [RecuperacionController::class, 'restablecer'])->name('password.update');
 });
 
+
 Route::middleware(['auth', 'sin-cache'])->group(function () {
     Route::post('/logout', [AccesoController::class, 'salir'])->name('logout');
     Route::get('/cambiar-contrasena', [ContrasenaController::class, 'mostrarCambiar'])->name('contrasena.editar');
     Route::post('/cambiar-contrasena', [ContrasenaController::class, 'actualizar'])->name('contrasena.actualizar');
+
 });
+
 
 //panel de usuarios
 Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group(function () {
-    Route::view('/superusuario', 'panel.superusuario')->name('superusuario');
-    Route::view('/administrador', 'panel.administrador')->name('administrador');
-    Route::view('/docente', 'panel.docente')->name('docente');
-    Route::view('/alumno', 'panel.alumno')->name('alumno');
+    Route::view('/superusuario', 'panel.superusuario')->name('superusuario')->middleware('rol:superusuario');
+    Route::view('/administrador', 'panel.administrador')->name('administrador')->middleware('rol:administrador');
+    Route::view('/docente', 'panel.docente')->name('docente')->middleware('rol:docente');
+    Route::view('/alumno', 'panel.alumno')->name('alumno')->middleware('rol:alumno');
+});
+
+// ---------- Sprint 3: solo el superusuario ----------
+Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->group(function () {
+    // HU-03 · Axel: administradores
 });
 
 // ---------- Sprint 3: administrador y superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
     // HU-05 · Marcos: materias
-    // Si te marca error de que MateriaController no existe, ponle // a las 2 líneas de abajo
-   // Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
-    //Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
+    Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
+    Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
 
     // HU-06 · Marcos: aulas
     Route::resource('aulas', AulaController::class)->except(['show', 'destroy']);
     Route::patch('aulas/{aula}/estado', [AulaController::class, 'cambiarEstado'])->name('aulas.estado');
+
+    // HU-07 · Axel: semestres
+    Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
+    Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
+
+    // HU-12 · Axel: jornada (solo se editan las horas)
+    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
+    Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
+    Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
 });
