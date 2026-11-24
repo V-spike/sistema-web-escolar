@@ -24,9 +24,9 @@ class CatalogosSeeder extends Seeder
         }
 
         $aulas = [
-            ['clave' => 'A-101', 'edificio' => 'Edificio A', 'capacidad' => 40, 'activo' => true],
-            ['clave' => 'A-102', 'edificio' => 'Edificio A', 'capacidad' => 35, 'activo' => true],
-            ['clave' => 'LC-1', 'edificio' => 'Laboratorio de cómputo', 'capacidad' => 30, 'activo' => true],
+            ['clave' => 'A-101', 'edificio' => 'Edificio A', 'tipo' => 'salon', 'capacidad' => 40, 'activo' => true],
+            ['clave' => 'A-102', 'edificio' => 'Edificio A', 'tipo' => 'salon', 'capacidad' => 35, 'activo' => true],
+            ['clave' => 'LC-1', 'edificio' => 'Laboratorio de cómputo', 'tipo' => 'laboratorio', 'capacidad' => 30, 'activo' => true],
         ];
 
         foreach ($aulas as $datos) {

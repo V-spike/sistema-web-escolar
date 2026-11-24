@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Aula extends Model
 {
-    protected $fillable = ['clave', 'edificio', 'capacidad', 'activo'];
+    /** Valores permitidos de tipo (los mismos que muestran las vistas) */
+    public const TIPOS = ['salon', 'laboratorio', 'auditorio'];
+
+    protected $fillable = ['clave', 'edificio', 'tipo', 'capacidad', 'activo'];
 
     protected function casts(): array
     {

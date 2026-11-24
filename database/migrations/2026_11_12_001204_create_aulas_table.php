@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('clave', 20)->unique();
             $table->string('edificio', 50);
+            // T-38: salon, laboratorio o auditorio (el generador usa laboratorio para materias de cómputo)
+            $table->string('tipo', 20)->default('salon');
             $table->unsignedSmallInteger('capacidad');
             $table->boolean('activo')->default(true);
             $table->timestamps();
