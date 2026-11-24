@@ -7,6 +7,7 @@ use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
+use App\Http\Controllers\AulaController;
 use App\Http\Controllers\BloqueComunController;
 
 Route::redirect('/', '/login');
@@ -50,6 +51,8 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
 
     // HU-06 · Marcos: aulas
+    Route::resource('aulas', AulaController::class)->except(['show', 'destroy']);
+    Route::patch('aulas/{aula}/estado', [AulaController::class, 'cambiarEstado'])->name('aulas.estado');
 
     // HU-07 · Axel: semestres
     Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
