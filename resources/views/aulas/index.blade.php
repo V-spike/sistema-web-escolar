@@ -7,6 +7,9 @@
 @endsection
 
 @section('contenido')
+@php
+    $tipos = ['salon' => 'Salón', 'laboratorio' => 'Laboratorio', 'auditorio' => 'Auditorio'];
+@endphp
 <div class="barra-catalogo">
     <h1>Aulas</h1>
     <a href="{{ route('aulas.create') }}" class="btn btn--primario btn--enlace">Nueva aula</a>
@@ -15,12 +18,13 @@
 <div class="tabla-contenedor">
     <table class="tabla-catalogo">
         <thead>
-            <tr><th>Clave</th><th>Edificio</th><th>Capacidad</th><th>Estado</th><th>Acciones</th></tr>
+            <tr><th>Clave</th><th>Tipo</th><th>Edificio</th><th>Capacidad</th><th>Estado</th><th>Acciones</th></tr>
         </thead>
         <tbody>
         @forelse ($aulas as $aula)
             <tr @class(['tabla-catalogo__fila--baja' => ! $aula->activo])>
                 <td>{{ $aula->clave }}</td>
+                <td>{{ $aula->tipo}}</td>
                 <td>{{ $aula->edificio }}</td>
                 <td>{{ $aula->capacidad }}</td>
                 <td>
