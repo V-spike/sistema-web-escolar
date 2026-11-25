@@ -25,6 +25,9 @@ class MateriaController extends Controller
             'clave' => ['required', 'string', 'max:20', 'unique:materias,clave'],
             'nombre' => ['required', 'string', 'max:100'],
             'horas_semana' => ['required', 'integer', 'between:1,48'],
+            'clave_corta' => ['required', 'string', 'max:10'],
+            'semestre' => ['required', 'integer', 'between:1,6'],
+            'tipo' => ['required', Rule::in(['normal', 'bloque_comun', 'tutoria'])],
         ]);
 
         Materia::create($datos);
@@ -43,6 +46,9 @@ class MateriaController extends Controller
             'clave' => ['required', 'string', 'max:20', Rule::unique('materias', 'clave')->ignore($materia->id)],
             'nombre' => ['required', 'string', 'max:100'],
             'horas_semana' => ['required', 'integer', 'between:1,48'],
+            'clave_corta' => ['required', 'string', 'max:10'],
+            'semestre' => ['required', 'integer', 'between:1,6'],
+            'tipo' => ['required', Rule::in(['normal', 'bloque_comun', 'tutoria'])],
         ]);
 
         $materia->update($datos);
