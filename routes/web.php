@@ -9,6 +9,7 @@ use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\BloqueComunController;
+use App\Http\Controllers\DocenteController;
 
 Route::redirect('/', '/login');
 
@@ -68,3 +69,7 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
     Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
 });
+
+// HU-10 · Marcos
+Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
+Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
