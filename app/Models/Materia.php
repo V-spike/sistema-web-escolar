@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Materia extends Model
 {
@@ -12,4 +13,10 @@ class Materia extends Model
     {
         return ['activo' => 'boolean', 'horas_semana' => 'integer'];
     }
+
+    public function docentes(): BelongsToMany
+    {
+    return $this->belongsToMany(Docente::class);
+    }
+
 }

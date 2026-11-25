@@ -8,6 +8,7 @@ use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\AulaController;
+use App\Http\Controllers\DocenteController;
 
 Route::redirect('/', '/login');
 
@@ -62,3 +63,7 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
     Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
 });
+
+// HU-10 · Marcos
+Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
+Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
