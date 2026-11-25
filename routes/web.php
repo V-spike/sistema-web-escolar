@@ -7,8 +7,8 @@ use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
-use App\Http\Controllers\AulaController;
 use App\Http\Controllers\BloqueComunController;
+use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DocenteController;
 
 Route::redirect('/', '/login');
@@ -59,15 +59,15 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
     Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
 
-    // HU-12 · Axel: jornada (solo se editan las horas)
-    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
-    Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
-    Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
-
     // HU-25 · Axel: bloques comunes
     Route::get('bloques-comunes', [BloqueComunController::class, 'index'])->name('bloques-comunes.index');
     Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
     Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
+
+    // HU-12 · Axel: jornada (solo se editan las horas)
+    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
+    Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
+    Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
 });
 
 // HU-10 · Marcos
