@@ -9,6 +9,7 @@ use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DisponibilidadController;
+use App\Http\Controllers\DocenteController;
 
 Route::redirect('/', '/login');
 
@@ -67,3 +68,7 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
     Route::put('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'update'])->name('docentes.disponibilidad.guardar');
 });
+
+// HU-10 · Marcos
+Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
+Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
