@@ -9,6 +9,7 @@ use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\GrupoController;
 
 Route::redirect('/', '/login');
 
@@ -67,3 +68,7 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
 // HU-10 · Marcos
 Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
 Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
+
+// HU-08 · Marcos
+Route::resource('grupos', GrupoController::class)->except(['show', 'destroy']);
+Route::patch('grupos/{grupo}/estado', [GrupoController::class, 'cambiarEstado'])->name('grupos.estado');
