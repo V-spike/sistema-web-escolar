@@ -34,7 +34,9 @@
                 </td>
                 <td class="tabla-catalogo__acciones">
                     <a href="{{ route('docentes.edit', $docente) }}" class="btn btn--secundario btn--chico btn--enlace">Editar</a>
-                    <a href="{{ route('docentes.disponibilidad', $docente) }}" class="btn btn--secundario btn--chico btn--enlace">Disponibilidad</a>
+                    @if (Route::has('docentes.disponibilidad'))
+                        <a href="{{ route('docentes.disponibilidad', $docente) }}" class="btn btn--secundario btn--chico btn--enlace">Disponibilidad</a>
+                    @endif
                     <form method="POST" action="{{ route('docentes.estado', $docente) }}"
                           onsubmit="return confirm('¿Seguro que quieres cambiar el estado de este docente?')">
                         @csrf

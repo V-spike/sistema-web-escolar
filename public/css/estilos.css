@@ -162,3 +162,10 @@ body { margin: 0; font-family: var(--fuente); color: var(--color-texto); backgro
     gap: 8px;
     cursor: pointer;
 }
+
+.campo__ayuda {
+    display: block;
+    font-size: 0.8rem;
+    color: #6B7280;
+    margin-top: -2px;
+}
