@@ -10,14 +10,46 @@ use Illuminate\Validation\Rule;
 
 class DocenteController extends Controller
 {
-    public function index()
+    /** Opciones del selector "Ordenar por": clave => [texto, columna, dirección] */
+    private const ORDENES = [
+        'nombre'      => ['Nombre (A–Z)', 'apellido_paterno', 'asc'],
+        'nombre_desc' => ['Nombre (Z–A)', 'apellido_paterno', 'desc'],
+        'numero'      => ['Número de personal', 'numero_personal', 'asc'],
+        'horas_desc'  => ['Más horas de plaza', 'horas_plaza', 'desc'],
+        'horas'       => ['Menos horas de plaza', 'horas_plaza', 'asc'],
+    ];
+
+    public function index(Request $request)
     {
+        // Lo que eligió la persona; si manda algo raro se usa el orden por nombre
+        $orden = array_key_exists($request->query('orden'), self::ORDENES) ? $request->query('orden') : 'nombre';
+        $estado = in_array($request->query('estado'), ['activos', 'baja'], true) ? $request->query('estado') : 'todos';
+        $buscar = trim((string) $request->query('buscar'));
+
+        [, $columna, $direccion] = self::ORDENES[$orden];
+
         $docentes = Docente::with('materias')
-            ->orderByDesc('activo')
-            ->orderBy('apellido_paterno')
+            ->when($estado === 'activos', fn ($q) => $q->where('activo', true))
+            ->when($estado === 'baja', fn ($q) => $q->where('activo', false))
+            ->when($buscar !== '', fn ($q) => $q->where(function ($q) use ($buscar) {
+                $q->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido_paterno', 'like', "%{$buscar}%")
+                    ->orWhere('apellido_materno', 'like', "%{$buscar}%")
+                    ->orWhere('numero_personal', 'like', "%{$buscar}%");
+            }))
+            ->orderByDesc('activo')              // los dados de baja siempre al final
+            ->orderBy($columna, $direccion)
+            ->orderBy('apellido_paterno')        // desempate
+            ->orderBy('apellido_materno')
             ->get();
 
-        return view('docentes.index', compact('docentes'));
+        return view('docentes.index', [
+            'docentes' => $docentes,
+            'ordenes' => self::ORDENES,
+            'orden' => $orden,
+            'estado' => $estado,
+            'buscar' => $buscar,
+        ]);
     }
 
     public function create()
