@@ -93,6 +93,7 @@ small, .tenue { color: var(--texto-suave); }
 .campo:focus { outline: none; border-color: var(--primario); box-shadow: 0 0 0 3px var(--primario-suave); }
 .campo--error { border-color: var(--error); }
 .campo__ayuda { display: block; font-size: .8rem; color: var(--texto-suave); margin: .3rem 0 0; }
+.panel .formulario { border: none; box-shadow: none; padding: 0; max-width: none; background: transparent; }
 .formulario__acciones { display: flex; gap: .75rem; margin-top: 1.5rem; flex-wrap: wrap; }
 .formulario__acciones .btn--primario { width: auto; }
 .formulario__fila { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0 1rem; }
