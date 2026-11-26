@@ -7,6 +7,7 @@ use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
+use App\Http\Controllers\BloqueComunController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DisponibilidadController;
 use App\Http\Controllers\DocenteController;
@@ -59,6 +60,11 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-07 · Axel: semestres
     Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
     Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
+
+    // HU-25 · Axel: bloques comunes
+    Route::get('bloques-comunes', [BloqueComunController::class, 'index'])->name('bloques-comunes.index');
+    Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
+    Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
 
     // HU-12 · Axel: jornada (solo se editan las horas)
     Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
