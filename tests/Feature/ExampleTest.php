@@ -2,18 +2,16 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
+     * La raíz del sitio manda al login (T-12), y el login abre.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_la_raiz_manda_al_login(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $this->get('/')->assertRedirect('/login');
+        $this->get('/login')->assertOk();
     }
 }

@@ -8,6 +8,10 @@
         ['Materias', 'materias.index', 'materias.*'],
         ['Aulas', 'aulas.index', 'aulas.*'],
         ['Semestres', 'semestres.index', 'semestres.*'],
+        ['Jornada', 'jornada.index', 'jornada.*'],
+        ['Bloques comunes', 'bloques-comunes.index', 'bloques-comunes.*'],
+        ['Docentes', 'docentes.index', 'docentes.*'],
+        ['Grupos', 'grupos.index', 'grupos.*'],
     ];
 
     $listas = [
@@ -16,8 +20,8 @@
     ][$rol] ?? [];
 
     $pendientes = [
-        'superusuario'  => ['Grupos', 'Alumnos', 'Docentes'],
-        'administrador' => ['Grupos', 'Alumnos', 'Docentes'],
+        'superusuario'  => ['Alumnos'],
+        'administrador' => ['Alumnos'],
         'docente'       => ['Mi horario', 'Calificaciones'],
         'alumno'        => ['Mi horario', 'Mis calificaciones'],
     ][$rol] ?? [];
