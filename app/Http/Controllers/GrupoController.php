@@ -53,6 +53,8 @@ class GrupoController extends Controller
             'aula_id'     => ['nullable', 'exists:aulas,id'],
             'capacidad'   => ['required', 'integer', 'between:1,50'],
             'area'        => ['nullable', 'string', 'max:60'],
+        ], [
+            'letra.unique' => 'Ese grupo ya existe en el semestre (mismo grado y letra).',
         ]);
 
         Grupo::create($datos);
@@ -92,6 +94,8 @@ class GrupoController extends Controller
             'aula_id'     => ['nullable', 'exists:aulas,id'],
             'capacidad'   => ['required', 'integer', 'between:1,50'],
             'area'        => ['nullable', 'string', 'max:60'],
+        ], [
+            'letra.unique' => 'Ese grupo ya existe en el semestre (mismo grado y letra).',
         ]);
 
         if ($causa = Guardas::cambioGrupo($grupo, (int) $datos['grado'], (int) $datos['semestre_id'])) {

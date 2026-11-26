@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Calificaciones de ejemplo de los parciales 1 y 2 para los alumnos de ejemplo.
+ * Calificaciones de ejemplo de los parciales 1 y 2 para los alumnos de ejemplo (1.º, 3.º y 5.º).
  * Siempre salen las mismas (mt_srand), así la boleta se ve igual cada vez que se siembra.
  */
 class CalificacionesDemoSeeder extends Seeder
@@ -23,25 +23,35 @@ class CalificacionesDemoSeeder extends Seeder
 
         mt_srand(2026);
 
-        $materias = Materia::where('semestre', 1)->where('activo', true)->whereIn('tipo', Materia::EN_BOLETA)->get();
-        $alumnos = User::where('rol', 'alumno')->where('activo', true)->whereNotNull('grupo_id')->orderBy('id')->get();
+        // Materias de la boleta agrupadas por grado: [1 => [...], 3 => [...], 5 => [...]]
+        $materiasPorGrado = Materia::where('activo', true)->whereIn('tipo', Materia::EN_BOLETA)->get()->groupBy('semestre');
+        $alumnos = User::with('grupo')->where('rol', 'alumno')->where('activo', true)->whereNotNull('grupo_id')->orderBy('id')->get();
 
         Calificacion::where('semestre_id', $semestre->id)->delete();
 
+        $filas = [];
+        $ahora = now();
         foreach ($alumnos as $alumno) {
             $nivel = mt_rand(60, 95) / 10;   // qué tan bien le va en general a este alumno
 
-            foreach ($materias as $materia) {
+            foreach ($materiasPorGrado[$alumno->grupo->grado] ?? [] as $materia) {
                 foreach ([1, 2] as $parcial) {
-                    Calificacion::create([
+                    $filas[] = [
                         'semestre_id' => $semestre->id,
                         'alumno_id' => $alumno->id,
                         'materia_id' => $materia->id,
                         'parcial' => $parcial,
                         'valor' => $this->valor($materia, $nivel),
-                    ]);
+                        'created_at' => $ahora,
+                        'updated_at' => $ahora,
+                    ];
                 }
             }
+        }
+
+        // Se guardan de 500 en 500: mucho más rápido que una por una
+        foreach (array_chunk($filas, 500) as $bloque) {
+            Calificacion::insert($bloque);
         }
     }
 

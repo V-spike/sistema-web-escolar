@@ -19,7 +19,7 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
-Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 92 docentes, 7 grupos de primero con 15 alumnos inventados (de 1.º A a 1.º F) y calificaciones de ejemplo. El horario queda vacío para acomodarlo a mano.
+Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 92 docentes, materias de 1.º, 3.º y 5.º (las de 3.º y 5.º son de ejemplo), 13 grupos (1.º A–G, 3.º A–C y 5.º A–C) con 15 alumnos inventados cada uno (menos 1.º G) y calificaciones de ejemplo. El horario queda vacío para acomodarlo a mano.
 
 Los nombres que firman la boleta van en `.env` (`ESCUELA_DIRECTOR` y `ESCUELA_SUBDIRECTOR`).
 
@@ -35,7 +35,7 @@ Todos usan la contraseña `Escolar2026`.
 | administrador@escolar.test | Administrador | Catálogos, horario, calificaciones y boletas |
 | docente@escolar.test | Docente | Su horario y la captura de calificaciones (ligado al docente D-001) |
 | alumno@escolar.test | Alumno | Su horario y su boleta (1.º A) |
-| alumno.a01@escolar.test … alumno.f15@escolar.test | Alumno | 15 alumnos inventados por grupo, con calificaciones de ejemplo |
+| alumno.a01@escolar.test … alumno.f15@escolar.test (1.º), alumno.3a01@… y alumno.5a01@… (3.º y 5.º) | Alumno | 15 alumnos inventados por grupo, con calificaciones de ejemplo |
 | baja@escolar.test | Alumno dado de baja | No puede entrar |
 
 ## Pruebas
