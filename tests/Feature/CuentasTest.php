@@ -25,6 +25,13 @@ class CuentasTest extends TestCase
         return User::where('rol', $rol)->where('activo', true)->first();
     }
 
+    public function test_con_sesion_abierta_el_login_manda_a_su_panel(): void
+    {
+        foreach (['superusuario', 'administrador', 'docente', 'alumno'] as $rol) {
+            $this->actingAs($this->usuario($rol))->get('/login')->assertRedirect('/panel/'.$rol);
+        }
+    }
+
     public function test_registrar_un_alumno_en_un_grupo(): void
     {
         $grupo = Grupo::where('letra', 'B')->first();

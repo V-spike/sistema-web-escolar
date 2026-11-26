@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'rol' => \App\Http\Middleware\VerificarRol::class,
             'sin-cache' => \App\Http\Middleware\SinCache::class,
         ]);
+
+        // Si alguien con sesión abierta entra a /login, va a su panel.
+        // Sin esto Laravel lo manda a "/", que redirige a /login otra vez (bucle).
+        $middleware->redirectUsersTo(fn (Request $request) => route('panel.'.$request->user()->rol));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
