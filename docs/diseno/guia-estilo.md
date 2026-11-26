@@ -10,31 +10,32 @@ Esta guía explica los colores, la fuente y las clases de `public/css/estilos.cs
 
 ## Colores
 
+Diseño final (26/11/2026): minimalista, con los dos colores del logo de la escuela. Todo lo demás es blanco y gris. Las variables están al inicio de `public/css/estilos.css`.
+
 | Nombre | Variable CSS | Valor | Uso |
-| ---    | ---          | -  -- | --- |
-|primario| `--color-primario` | #1F4E79 | Botones principales, encabezado, enlaces y texto de la opción activa del menú |
-| primario claro | `--color-primario-claro` | #DCE6F2 | Fondo de la opción activa del menú |
-| fondo | `--color-fondo` | #F5F7FA | Fondo general de las pantallas |
-| texto | `--color-texto` | #222222 | Texto principal |
-| borde | `--color-borde` | #C9D3DF | Bordes de los campos y del menú |
-| éxito | `--color-exito` | #2E7D32 | Texto de los mensajes de éxito |
-| error | `--color-error` | #C62828 | Texto de los mensajes de error y borde de un campo con error |
-| aviso | (sin variable) | #B7791F | Reservado para advertencias. Todavía no tiene variable ni clase en `estilos.css` |
+| --- | --- | --- | --- |
+| primario (azul del logo) | `--primario` | #1F395A | Botones principales, nombre del sistema, pestaña activa, números del inicio |
+| primario suave | `--primario-suave` | #EDF1F6 | Fondo de la opción activa del menú y de la columna que se captura |
+| acento (verde del logo) | `--acento` | #62B22D | Rayita de la opción activa, barras de avance, línea del login |
+| acento oscuro | `--acento-oscuro` | #3E7A1C | Verde para texto (se lee mejor sobre blanco) |
+| fondo | `--fondo` | #FAFAFA | Fondo general |
+| superficie | `--superficie` | #FFFFFF | Tarjetas, tablas y formularios |
+| texto | `--texto` | #18181B | Texto principal |
+| texto suave / tenue | `--texto-suave` / `--texto-tenue` | #52525B / #A1A1AA | Textos de ayuda y datos secundarios |
+| borde | `--borde` | #E4E4E7 | Líneas de tablas, tarjetas y campos |
+| éxito | `--exito` | #3E7A1C | Mensajes de éxito y estado "Activo" |
+| error | `--error` | #B91C1C | Errores, empalmes y calificaciones reprobatorias |
+| aviso | `--aviso` | #A16207 | Avisos que no impiden guardar |
 
-Otros valores fijos que usa el CSS:
-
-| Valor | Uso |
-| --- | --- |
-| #FDECEA | Fondo del mensaje de error |
-| #E8F5E9 | Fondo del mensaje de éxito |
-| #9AA5B1 | Texto de una opción de menú pendiente |
-| #FFFFFF | Tarjetas, menú y botón secundario |
+Las variables viejas (`--color-primario`, `--color-fondo`, etc.) siguen existiendo y apuntan a las nuevas, para no romper nada.
 
 ## Fuente y medidas
 
-- Fuente: Segoe UI, con respaldo Arial y sans-serif (`--fuente`).
-- Esquinas redondeadas: 6 px (`--radio`). Las tarjetas usan 10 px.
-- Tamaño de texto base de botones y campos: 1 rem (16 px).
+- Fuente: Inter (Google Fonts), con respaldo Segoe UI y system-ui (`--fuente`). Una sola fuente para títulos y texto.
+- Esquinas redondeadas: 8 px (`--radio`) en tarjetas y tablas; 6 px (`--radio-chico`) en botones y campos.
+- Texto base: 14 px. Sin sombras ni degradados, salvo la tarjeta del login.
+- Logo: `public/img/logo-escuela.png` (fondo transparente) y `public/img/favicon-escuela.png`.
+- Fondo del login: `public/img/patron-escolar.svg`, íconos escolares en línea fina que se repiten.
 
 ## Clases
 
@@ -284,3 +285,20 @@ que dice "Receso". No llevan celdas, así que ahí no se pueden marcar casillas 
 | `.cuadricula` | La tabla. Ancho mínimo de 640px: en el celular se desliza dentro de `.tabla-contenedor`. |
 | `.cuadricula__hora` | Columna de la hora (96px). Se queda fija al deslizar. |
 | `.cuadricula__celda` | Cada celda de día
+## Clases agregadas en la versión final
+
+| Clase | Para qué sirve |
+| --- | --- |
+| `.menu__grupo`, `.menu__seccion`, `.icono` | Secciones del menú lateral con título y su ícono (`resources/views/componentes/icono.blade.php`) |
+| `.marca`, `.marca__logo`, `.marca__escuela` | Logo y nombre de la escuela (`componentes/marca.blade.php`) |
+| `.filtros`, `.filtros__opcion`, `.filtros__total` | Barra de buscar, ordenar y mostrar arriba de un listado (Docentes) |
+| `.pasos`, `.paso`, `.paso__titulo`, `.paso__numero` | Formulario por pasos numerados (agregar clase al horario) |
+| `.dias-botones` | Días como botones Lun–Vie en lugar de una lista |
+| `.carga`, `.carga__fila` | "Horas del grupo": materia, barra y cuánto falta en un renglón |
+| `.bloque__materia`, `.bloque__quien`, `.bloque__hora`, `.bloque--c0` … `.bloque--c7` | Cuadros del horario: tres renglones y un color suave por materia |
+| `.tabla-captura`, `.tabla-captura__actual`, `.campo--calificacion` | Captura de calificaciones y faltas; la columna del parcial elegido va resaltada |
+| `.tabla-calificaciones`, `.calif`, `.calif--baja`, `.calif--final` | "Mis calificaciones" del alumno; las reprobatorias en rojo |
+| `.hoja-oficial`, `.formato`, `.formato__etiqueta`, `.firmas` | Boleta e informe con el formato oficial, listos para imprimir (una boleta por hoja) |
+| `.error-pagina` | Páginas de error 403, 404, 419, 429 y 500 |
+
+Las reglas para celular van al final de `estilos.css` (sección "Celular y tableta") para que ganen sobre las anteriores.
