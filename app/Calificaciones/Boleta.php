@@ -3,6 +3,8 @@
 namespace App\Calificaciones;
 
 use App\Models\Calificacion;
+use App\Models\ClaseImpartida;
+use App\Models\Conducta;
 use App\Models\Materia;
 use App\Models\Semestre;
 use App\Models\User;
@@ -18,6 +20,7 @@ class Boleta
     public array $promedioParcial = [];   // [1 => 8.2, 2 => 7.9, 3 => null]
     public ?float $promedioGeneral = null;
     public string $tipoExamen = '';       // "2P" = la boleta va hasta el segundo parcial
+    public ?string $conducta = null;      // "buena", "regular", "mala" o null si no se ha capturado
 
     public function __construct(public User $alumno, public Semestre $semestre)
     {
@@ -30,6 +33,8 @@ class Boleta
             ->orderByRaw("tipo = 'acreditable'")->orderBy('id')->get();
 
         $calificaciones = Calificacion::where('semestre_id', $semestre->id)->where('alumno_id', $alumno->id)->get();
+        $impartidas = ClaseImpartida::where('semestre_id', $semestre->id)->where('grupo_id', $alumno->grupo_id)->get();
+        $this->conducta = Conducta::where('semestre_id', $semestre->id)->where('alumno_id', $alumno->id)->value('valor');
 
         foreach ($materias as $materia) {
             $valores = [];
@@ -37,7 +42,14 @@ class Boleta
                 $valores[$p] = $calificaciones->first(fn ($c) => $c->materia_id === $materia->id && $c->parcial === $p)?->valor;
             }
 
-            $this->filas[] = $this->fila($materia, $valores);
+            $deLaMateria = $calificaciones->where('materia_id', $materia->id);
+            $clases = $impartidas->where('materia_id', $materia->id);
+
+            $this->filas[] = $this->fila($materia, $valores) + [
+                // Suma de los parciales capturados; null si nadie las ha capturado
+                'clases' => $clases->isEmpty() ? null : $clases->sum('total'),
+                'faltas' => $deLaMateria->whereNotNull('faltas')->isEmpty() ? null : $deLaMateria->sum('faltas'),
+            ];
         }
 
         // Promedio de cada parcial: solo materias con número (las acreditables no promedian)

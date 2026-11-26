@@ -14,11 +14,11 @@ class Calificacion extends Model
 {
     protected $table = 'calificaciones';   // Laravel buscaría "calificacions"
 
-    protected $fillable = ['semestre_id', 'alumno_id', 'materia_id', 'parcial', 'valor'];
+    protected $fillable = ['semestre_id', 'alumno_id', 'materia_id', 'parcial', 'valor', 'faltas'];
 
     protected function casts(): array
     {
-        return ['parcial' => 'integer'];
+        return ['parcial' => 'integer', 'faltas' => 'integer'];
     }
 
     public function alumno(): BelongsTo

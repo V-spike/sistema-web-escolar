@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Calificacion;
+use App\Models\ClaseImpartida;
+use App\Models\Conducta;
 use App\Models\Materia;
 use App\Models\Semestre;
 use App\Models\User;
@@ -28,6 +30,8 @@ class CalificacionesDemoSeeder extends Seeder
         $alumnos = User::with('grupo')->where('rol', 'alumno')->where('activo', true)->whereNotNull('grupo_id')->orderBy('id')->get();
 
         Calificacion::where('semestre_id', $semestre->id)->delete();
+        ClaseImpartida::where('semestre_id', $semestre->id)->delete();
+        Conducta::where('semestre_id', $semestre->id)->delete();
 
         $filas = [];
         $ahora = now();
@@ -42,16 +46,32 @@ class CalificacionesDemoSeeder extends Seeder
                         'materia_id' => $materia->id,
                         'parcial' => $parcial,
                         'valor' => $this->valor($materia, $nivel),
+                        'faltas' => mt_rand(1, 100) <= 60 ? 0 : mt_rand(1, 3),
                         'created_at' => $ahora,
                         'updated_at' => $ahora,
                     ];
                 }
             }
+
+            // Conducta: casi todos buena
+            $azar = mt_rand(1, 100);
+            Conducta::create(['semestre_id' => $semestre->id, 'alumno_id' => $alumno->id,
+                'valor' => $azar <= 85 ? 'buena' : ($azar <= 97 ? 'regular' : 'mala')]);
         }
 
         // Se guardan de 500 en 500: mucho más rápido que una por una
         foreach (array_chunk($filas, 500) as $bloque) {
             Calificacion::insert($bloque);
+        }
+
+        // Clases impartidas: unas 4 semanas por parcial × horas a la semana de la materia
+        foreach ($alumnos->pluck('grupo')->unique('id') as $grupo) {
+            foreach ($materiasPorGrado[$grupo->grado] ?? [] as $materia) {
+                foreach ([1, 2] as $parcial) {
+                    ClaseImpartida::create(['semestre_id' => $semestre->id, 'grupo_id' => $grupo->id,
+                        'materia_id' => $materia->id, 'parcial' => $parcial, 'total' => $materia->horas_semana * 4]);
+                }
+            }
         }
     }
 

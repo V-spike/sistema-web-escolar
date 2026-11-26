@@ -194,6 +194,56 @@ class CalificacionTest extends TestCase
         $this->assertStringContainsString('9.5', $contenido);
     }
 
+    public function test_faltas_y_clases_impartidas_llegan_a_la_boleta(): void
+    {
+        $docente = $this->docenteConClase();
+        $alumno = User::where('email', 'alumno@escolar.test')->first();
+
+        // Faltas mayores a las clases impartidas: no se guarda
+        $this->actingAs($docente)->put($this->url(), [
+            'parcial' => 1, 'impartidas' => 16, 'valores' => [$alumno->id => '9'], 'faltas' => [$alumno->id => '20'],
+        ])->assertSessionHasErrors("faltas.{$alumno->id}");
+
+        $this->put($this->url(), ['parcial' => 1, 'impartidas' => 16, 'valores' => [$alumno->id => '9'], 'faltas' => [$alumno->id => '2']])
+            ->assertSessionHasNoErrors();
+        $this->put($this->url(), ['parcial' => 2, 'impartidas' => 15, 'valores' => [$alumno->id => '8'], 'faltas' => [$alumno->id => '1']])
+            ->assertSessionHasNoErrors();
+
+        // La boleta suma: 31 clases y 3 faltas
+        $boleta = new \App\Calificaciones\Boleta($alumno->fresh(), Semestre::activo());
+        $fila = collect($boleta->filas)->first(fn ($f) => $f['materia']->id === $this->pm->id);
+        $this->assertSame(31, $fila['clases']);
+        $this->assertSame(3, $fila['faltas']);
+
+        $this->actingAs($alumno)->get('/panel/mis-calificaciones')->assertOk()->assertSee('Faltas');
+    }
+
+    public function test_conducta_la_captura_la_administracion_y_sale_en_la_boleta(): void
+    {
+        $alumno = User::where('email', 'alumno@escolar.test')->first();
+
+        $this->actingAs($this->admin())->get("/panel/conducta/{$this->grupoA->id}")->assertOk()->assertSee('Conducta de 1.º A');
+        $this->put("/panel/conducta/{$this->grupoA->id}", ['conducta' => [$alumno->id => 'regular']])->assertSessionHasNoErrors();
+
+        $this->assertSame('regular', (new \App\Calificaciones\Boleta($alumno->fresh(), Semestre::activo()))->conducta);
+
+        // Un docente que no es tutor del grupo no entra
+        $this->actingAs($this->docenteConClase())->get("/panel/conducta/{$this->grupoA->id}")->assertForbidden();
+    }
+
+    public function test_el_tutor_captura_la_conducta_de_su_grupo(): void
+    {
+        $usuario = $this->docenteConClase();
+        Clase::create([
+            'semestre_id' => Semestre::activo()->id, 'grupo_id' => $this->grupoA->id,
+            'materia_id' => Materia::where('clave', 'TUT1')->first()->id, 'docente_id' => $usuario->docente->id,
+            'aula_id' => null, 'dia' => 2, 'hora_inicio' => '15:00', 'hora_fin' => '15:50',
+        ]);
+
+        $this->actingAs($usuario)->get('/panel/calificaciones')->assertSee('Conducta');
+        $this->get("/panel/conducta/{$this->grupoA->id}")->assertOk();
+    }
+
     public function test_letra_de_una_calificacion(): void
     {
         $this->assertSame('OCHO PUNTO CINCO', Letra::de(8.5));

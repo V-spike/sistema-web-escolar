@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Calificacion;
 use App\Models\Clase;
+use App\Models\ClaseImpartida;
+use App\Models\Conducta;
 use App\Models\Grupo;
 use App\Models\Materia;
 use App\Models\Semestre;
@@ -19,12 +21,54 @@ class CalificacionController extends Controller
     public function index()
     {
         $semestre = Semestre::activo();
+        $porGrupo = $semestre ? $this->asignaciones($semestre)->groupBy(fn ($a) => $a['grupo']->id) : collect();
+        $tutorDe = $semestre ? $this->gruposDondeEsTutor($semestre) : [];
+
+        // Un panel por grupo: donde califica materias y donde es tutor (para capturar la conducta)
+        $grupos = Grupo::whereIn('id', $porGrupo->keys()->merge($tutorDe)->unique())
+            ->orderBy('grado')->orderBy('letra')->get();
 
         return view('calificaciones.index', [
             'semestre' => $semestre,
-            'porGrupo' => $semestre ? $this->asignaciones($semestre)->groupBy(fn ($a) => $a['grupo']->id) : collect(),
+            'grupos' => $grupos,
+            'porGrupo' => $porGrupo,
+            'tutorDe' => $tutorDe,
             'esAdmin' => $this->esAdmin(),
         ]);
+    }
+
+    /** Conducta del semestre: la captura el tutor del grupo o la administración */
+    public function conducta(Grupo $grupo)
+    {
+        $semestre = Semestre::activo();
+        abort_unless($semestre && $grupo->semestre_id === $semestre->id && $this->puedeConducta($grupo, $semestre), 403);
+
+        return view('calificaciones.conducta', [
+            'grupo' => $grupo,
+            'semestre' => $semestre,
+            'alumnos' => $grupo->alumnos()->where('activo', true)->orderBy('name')->get(),
+            'conductas' => Conducta::where('semestre_id', $semestre->id)->pluck('valor', 'alumno_id'),
+        ]);
+    }
+
+    public function guardarConducta(Request $request, Grupo $grupo)
+    {
+        $semestre = Semestre::activo();
+        abort_unless($semestre && $grupo->semestre_id === $semestre->id && $this->puedeConducta($grupo, $semestre), 403);
+
+        $request->validate(['conducta.*' => ['nullable', 'in:' . implode(',', array_keys(Conducta::VALORES))]]);
+        $elegidas = $request->input('conducta', []);
+
+        foreach ($grupo->alumnos()->where('activo', true)->get() as $alumno) {
+            $clave = ['semestre_id' => $semestre->id, 'alumno_id' => $alumno->id];
+            if (empty($elegidas[$alumno->id])) {
+                Conducta::where($clave)->delete();
+            } else {
+                Conducta::updateOrCreate($clave, ['valor' => $elegidas[$alumno->id]]);
+            }
+        }
+
+        return redirect()->route('calificaciones.conducta', $grupo)->with('estado', 'Conducta guardada.');
     }
 
     public function capturar(Request $request, Grupo $grupo, Materia $materia)
@@ -35,15 +79,21 @@ class CalificacionController extends Controller
         $parcial = $this->parcial($request);
         $alumnos = $grupo->alumnos()->where('activo', true)->orderBy('name')->get();
 
-        // $valores[alumno_id][parcial] = "8.5"
+        // $valores[alumno_id][parcial] = "8.5"   y   $faltas[alumno_id][parcial] = 2
         $valores = [];
+        $faltas = [];
         $guardadas = Calificacion::where('semestre_id', $semestre->id)->where('materia_id', $materia->id)
             ->whereIn('alumno_id', $alumnos->pluck('id'))->get();
         foreach ($guardadas as $c) {
             $valores[$c->alumno_id][$c->parcial] = $c->valor;
+            $faltas[$c->alumno_id][$c->parcial] = $c->faltas;
         }
 
-        return view('calificaciones.capturar', compact('grupo', 'materia', 'semestre', 'parcial', 'alumnos', 'valores'));
+        // Clases que se dieron en cada parcial: [1 => 16, 2 => 15]
+        $impartidas = ClaseImpartida::where('semestre_id', $semestre->id)->where('grupo_id', $grupo->id)
+            ->where('materia_id', $materia->id)->pluck('total', 'parcial');
+
+        return view('calificaciones.capturar', compact('grupo', 'materia', 'semestre', 'parcial', 'alumnos', 'valores', 'faltas', 'impartidas'));
     }
 
     public function guardar(Request $request, Grupo $grupo, Materia $materia)
@@ -52,7 +102,14 @@ class CalificacionController extends Controller
         abort_unless($semestre && $this->puede($grupo, $materia, $semestre), 403, 'No impartes esta materia en este grupo.');
 
         $parcial = $this->parcial($request);
+        $request->validate(
+            ['impartidas' => ['nullable', 'integer', 'between:0,200']],
+            ['impartidas.*' => 'Las clases impartidas deben ser un número de 0 a 200.']
+        );
+        $impartidas = $request->filled('impartidas') ? $request->integer('impartidas') : null;
+
         $escritos = $request->input('valores', []);
+        $faltasEscritas = $request->input('faltas', []);
         $alumnos = $grupo->alumnos()->where('activo', true)->get();
 
         // 1) Revisar todo antes de guardar: si hay un error no se guarda nada
@@ -60,38 +117,48 @@ class CalificacionController extends Controller
         $limpios = [];
         foreach ($alumnos as $alumno) {
             $texto = trim((string) ($escritos[$alumno->id] ?? ''));
-            if ($texto === '') {
-                $limpios[$alumno->id] = null;   // vacío = sin calificación
-                continue;
-            }
+            $faltaTexto = trim((string) ($faltasEscritas[$alumno->id] ?? ''));
 
-            $valor = Calificacion::normalizar($texto, $materia);
-            if ($valor === null) {
+            $valor = $texto === '' ? null : Calificacion::normalizar($texto, $materia);
+            if ($texto !== '' && $valor === null) {
                 $errores["valores.{$alumno->id}"] = $materia->tipo === 'acreditable'
                     ? "{$alumno->name}: escribe A o N/A."
                     : "{$alumno->name}: escribe un número de 5 a 10 (un decimal) o NP.";
-            } else {
-                $limpios[$alumno->id] = $valor;
             }
+
+            $faltas = $faltaTexto === '' ? null : (ctype_digit($faltaTexto) ? (int) $faltaTexto : -1);
+            if ($faltas === -1 || ($faltas !== null && $impartidas !== null && $faltas > $impartidas)) {
+                $errores["faltas.{$alumno->id}"] = "{$alumno->name}: las faltas deben ser un número entero"
+                    . ($impartidas !== null ? " y no más de {$impartidas} (las clases impartidas)." : '.');
+            }
+
+            $limpios[$alumno->id] = ['valor' => $valor, 'faltas' => $faltas];
         }
 
         if ($errores) {
             return back()->withInput()->withErrors($errores);
         }
 
-        // 2) Guardar (vacío borra la calificación de ese parcial)
-        foreach ($limpios as $alumnoId => $valor) {
+        // 2) Guardar. Si quedan vacías la calificación y las faltas, se borra el registro de ese parcial.
+        foreach ($limpios as $alumnoId => $datos) {
             $clave = ['semestre_id' => $semestre->id, 'alumno_id' => $alumnoId, 'materia_id' => $materia->id, 'parcial' => $parcial];
 
-            if ($valor === null) {
+            if ($datos['valor'] === null && $datos['faltas'] === null) {
                 Calificacion::where($clave)->delete();
             } else {
-                Calificacion::updateOrCreate($clave, ['valor' => $valor]);
+                Calificacion::updateOrCreate($clave, $datos);
             }
         }
 
+        $grupoMateria = ['semestre_id' => $semestre->id, 'grupo_id' => $grupo->id, 'materia_id' => $materia->id, 'parcial' => $parcial];
+        if ($impartidas === null) {
+            ClaseImpartida::where($grupoMateria)->delete();
+        } else {
+            ClaseImpartida::updateOrCreate($grupoMateria, ['total' => $impartidas]);
+        }
+
         return redirect()->route('calificaciones.capturar', [$grupo, $materia, 'parcial' => $parcial])
-            ->with('estado', "Calificaciones del parcial {$parcial} guardadas.");
+            ->with('estado', "Calificaciones y faltas del parcial {$parcial} guardadas.");
     }
 
     /** Informe del grupo en un parcial: alumnos × materias (como la hoja "DATOS" del formato oficial) */
@@ -177,7 +244,7 @@ class CalificacionController extends Controller
         return $pares->map(function ($par) use ($semestre) {
             $alumnos = $par['grupo']->alumnos()->where('activo', true)->pluck('id');
             $porParcial = Calificacion::where('semestre_id', $semestre->id)->where('materia_id', $par['materia']->id)
-                ->whereIn('alumno_id', $alumnos)->get()->countBy('parcial');
+                ->whereIn('alumno_id', $alumnos)->whereNotNull('valor')->get()->countBy('parcial');
 
             return $par + ['alumnos' => $alumnos->count(), 'capturadas' => $porParcial];
         });
@@ -198,6 +265,24 @@ class CalificacionController extends Controller
 
         return $docente && Clase::where('semestre_id', $semestre->id)->where('docente_id', $docente->id)
             ->where('grupo_id', $grupo->id)->where('materia_id', $materia->id)->exists();
+    }
+
+    /** Ids de los grupos donde quien entró da Tutoría este semestre */
+    private function gruposDondeEsTutor(Semestre $semestre): array
+    {
+        $docente = auth()->user()->docente;
+        if (! $docente) {
+            return [];
+        }
+
+        return Clase::where('semestre_id', $semestre->id)->where('docente_id', $docente->id)
+            ->whereHas('materia', fn ($q) => $q->where('tipo', 'tutoria'))
+            ->distinct()->pluck('grupo_id')->all();
+    }
+
+    private function puedeConducta(Grupo $grupo, Semestre $semestre): bool
+    {
+        return $this->esAdmin() || in_array($grupo->id, $this->gruposDondeEsTutor($semestre));
     }
 
     private function materiasDelGrado(int $grado)

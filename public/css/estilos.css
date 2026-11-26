@@ -468,3 +468,9 @@ a.bloque:hover { background: #E2E8F0; box-shadow: 0 2px 8px rgba(31, 57, 90, .12
     .menu__grupo { flex-direction: row; margin: 0; padding: 0; border: none; }
     .menu__opcion .icono { display: none; }
 }
+
+/* ---------- Captura: faltas y clases impartidas ---------- */
+.centrado { text-align: center !important; }
+.panel--compacto { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; padding: .85rem 1.25rem; margin-bottom: 1rem; }
+.tabla-captura__actual { background: var(--primario-suave); }
+.tabla-captura thead .tabla-captura__actual { color: var(--primario); font-weight: 600; }
