@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="icon" type="image/png" href="{{ asset('img/favicon-escuela.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=17">
+    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=18">
 </head>
 <body>
     <div class="distribucion">
