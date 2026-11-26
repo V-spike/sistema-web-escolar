@@ -82,6 +82,6 @@ class CuentasTest extends TestCase
         ]);
 
         $this->actingAs($this->usuario('docente'))->get('/panel/docente')->assertOk()->assertSee('Mi horario')->assertSee('P.M1')->assertSee('1.º A');
-        $this->actingAs(User::where('email', 'alumno@escolar.test')->first())->get('/panel/alumno')->assertOk()->assertSee('P.M1')->assertSee('C.A.');
+        $this->actingAs(User::where('email', 'alumno@escolar.test')->first())->get('/panel/alumno')->assertOk()->assertSee('P.M1');
     }
 }

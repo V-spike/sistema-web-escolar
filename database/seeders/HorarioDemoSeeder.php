@@ -51,7 +51,7 @@ class HorarioDemoSeeder extends Seeder
         $revisor = new RevisorEmpalmes();
         $grupos = Grupo::where('semestre_id', $semestre->id)->where('grado', 1)->whereIn('letra', ['A', 'B', 'C', 'D', 'E', 'F'])
             ->orderBy('letra')->get();
-        $materias = Materia::where('activo', true)->where('semestre', 1)->where('tipo', '!=', 'bloque_comun')
+        $materias = Materia::where('activo', true)->where('semestre', 1)
             ->orderByDesc('horas_semana')->get();
 
         foreach ($grupos as $g => $grupo) {

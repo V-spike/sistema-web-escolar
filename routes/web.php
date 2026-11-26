@@ -7,7 +7,6 @@ use App\Http\Controllers\ContrasenaController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\JornadaController;
-use App\Http\Controllers\BloqueComunController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DisponibilidadController;
 use App\Http\Controllers\DocenteController;
@@ -103,10 +102,6 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::post('jornada/recesos', [JornadaController::class, 'storeReceso'])->name('jornada.recesos.store');
     Route::delete('jornada/recesos/{receso}', [JornadaController::class, 'destroyReceso'])->name('jornada.recesos.destroy');
 
-    // HU-25: bloques comunes
-    Route::get('bloques-comunes', [BloqueComunController::class, 'index'])->name('bloques-comunes.index');
-    Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
-    Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
 
     // HU-10: docentes
     Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);

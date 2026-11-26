@@ -9,7 +9,7 @@
 @section('contenido')
 @php
     $parciales = range(1, config('escolar.parciales'));
-    $esBloque = $materia->tipo === 'bloque_comun';
+    $esBloque = $materia->tipo === 'acreditable';
 @endphp
 
 <div class="barra-catalogo">

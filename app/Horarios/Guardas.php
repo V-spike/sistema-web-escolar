@@ -3,7 +3,6 @@
 namespace App\Horarios;
 
 use App\Models\Aula;
-use App\Models\BloqueComun;
 use App\Models\Clase;
 use App\Models\Docente;
 use App\Models\Grupo;
@@ -65,7 +64,7 @@ class Guardas
 
     public static function bajaMateria(Materia $materia): ?string
     {
-        $n = Clase::where('materia_id', $materia->id)->count() + BloqueComun::where('materia_id', $materia->id)->count();
+        $n = Clase::where('materia_id', $materia->id)->count();
 
         return $n ? "No se puede dar de baja: {$materia->nombre} está {$n} veces en el horario. Quítala primero." : null;
     }
@@ -73,9 +72,8 @@ class Guardas
     public static function cambioMateria(Materia $materia, int $semestre, string $tipo, int $horas): ?string
     {
         $clases = Clase::where('materia_id', $materia->id)->get();
-        $enBloques = BloqueComun::where('materia_id', $materia->id)->exists();
 
-        if (($clases->isNotEmpty() || $enBloques) && ($semestre !== (int) $materia->semestre || $tipo !== $materia->tipo)) {
+        if ($clases->isNotEmpty() && ($semestre !== (int) $materia->semestre || $tipo !== $materia->tipo)) {
             return "No puedes cambiar el semestre ni el tipo de {$materia->nombre}: ya está en el horario.";
         }
 

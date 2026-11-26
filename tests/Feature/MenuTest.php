@@ -18,7 +18,7 @@ class MenuTest extends TestCase
 
         $respuesta = $this->actingAs($admin)->get('/panel/administrador')->assertOk();
 
-        foreach (['horarios', 'jornada', 'bloques-comunes', 'docentes', 'grupos', 'alumnos', 'semestres', 'materias', 'aulas'] as $seccion) {
+        foreach (['horarios', 'calificaciones', 'jornada', 'docentes', 'grupos', 'alumnos', 'semestres', 'materias', 'aulas'] as $seccion) {
             $respuesta->assertSee('/panel/' . $seccion, false);
         }
     }

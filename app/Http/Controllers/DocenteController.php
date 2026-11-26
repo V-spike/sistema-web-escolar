@@ -55,7 +55,6 @@ class DocenteController extends Controller
     public function create()
     {
         $materias = Materia::where('activo', true)
-            ->where('tipo', '!=', 'bloque_comun')
             ->orderBy('semestre')
             ->orderBy('nombre')
             ->get();
@@ -97,7 +96,6 @@ class DocenteController extends Controller
         $docente->load('materias');
 
         $materias = Materia::where('activo', true)
-            ->where('tipo', '!=', 'bloque_comun')
             ->orderBy('semestre')
             ->orderBy('nombre')
             ->get();

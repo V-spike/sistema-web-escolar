@@ -49,7 +49,6 @@
 </div>
 <div class="leyenda">
     <span><i style="background:#EEF2FF;border-color:#6366F1"></i>Clase</span>
-    <span><i style="background:#EDE9FE;border-color:#7C3AED"></i>Bloque común</span>
     <span><i style="background:#E2E8F0"></i>Receso</span>
     <span><i style="background:#FEE2E2;border-color:#B91C1C"></i>Con empalme</span>
 </div>

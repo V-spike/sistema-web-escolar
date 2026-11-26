@@ -156,9 +156,13 @@ class HorarioTest extends TestCase
         $this->rechazada(['hora_inicio' => '20:50', 'hora_fin' => '21:40'], 'jornada', 'fuera de la jornada');
     }
 
-    public function test_se_encima_con_el_bloque_comun(): void
+    public function test_curriculum_ampliado_se_acomoda_como_clase_normal(): void
     {
-        $this->rechazada(['hora_inicio' => '18:00', 'hora_fin' => '18:50'], 'bloque_comun', 'Todo 1.º tiene Currículum Ampliado (clubes) (bloque común) de 17:50–19:30');
+        // D-047 tiene C.A. en su perfil (database/seeders/datos/docentes.csv)
+        $this->guardar([
+            'materia_id' => $this->materia('CA1')->id, 'docente_id' => $this->docente('D-047')->id,
+            'hora_inicio' => '18:00', 'hora_fin' => '18:50',
+        ])->assertSessionMissing('empalmes');
     }
 
     public function test_el_docente_no_tiene_la_materia_en_su_perfil(): void
@@ -203,13 +207,11 @@ class HorarioTest extends TestCase
         $this->rechazada(['hora_inicio' => '16:00', 'hora_fin' => '15:00'], 'horas', 'posterior');
     }
 
-    public function test_materia_de_otro_grado_o_bloque_comun(): void
+    public function test_materia_de_otro_grado(): void
     {
         $tercero = Materia::create(['clave' => 'X3', 'clave_corta' => 'X3', 'nombre' => 'Materia de tercero', 'semestre' => 3, 'horas_semana' => 3, 'tipo' => 'normal']);
         $this->docente('D-008')->materias()->attach($tercero->id);
         $this->rechazada(['materia_id' => $tercero->id], 'materia_grado', 'es de 3.º semestre');
-
-        $this->rechazada(['materia_id' => $this->materia('CA1')->id], 'materia_bloque', 'es un bloque común');
     }
 
     public function test_algo_dado_de_baja(): void

@@ -9,17 +9,17 @@ class Materia extends Model
 {
     /**
      * Tipos de materia. Los que llevan calificación en la boleta son "normal" (de 5 a 10)
-     * y "bloque_comun" (A o N/A, como Currículum Ampliado).
+     * y "acreditable" (A o N/A, como Currículum Ampliado).
      */
     public const TIPOS = [
         'normal' => 'Normal',
-        'bloque_comun' => 'Bloque común',
+        'acreditable' => 'Se acredita (A o N/A)',
         'extendido' => 'Formación fundamental extendida',
         'tutoria' => 'Tutoría',
     ];
 
     /** Tipos que aparecen en la boleta */
-    public const EN_BOLETA = ['normal', 'bloque_comun'];
+    public const EN_BOLETA = ['normal', 'acreditable'];
 
     protected $fillable = [
     'clave',

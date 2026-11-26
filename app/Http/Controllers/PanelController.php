@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Horarios\RevisorEmpalmes;
 use App\Horarios\Semana;
-use App\Models\BloqueComun;
 use App\Models\Clase;
 use App\Models\Docente;
 use App\Models\Grupo;
@@ -58,9 +57,7 @@ class PanelController extends Controller
             $clases = Clase::with(['grupo', 'materia', 'docente', 'aula'])
                 ->where('semestre_id', $semestre->id)->where('grupo_id', $grupo->id)
                 ->orderBy('dia')->orderBy('hora_inicio')->get();
-            $semana->conClases($clases, 'alumno')
-                ->conBloquesComunes(BloqueComun::with('materia')->where('semestre_id', $semestre->id)
-                    ->where('grado', $grupo->grado)->get());
+            $semana->conClases($clases, 'alumno');
         }
 
         return view('panel.alumno', compact('grupo', 'semestre', 'semana', 'clases'));
@@ -75,7 +72,7 @@ class PanelController extends Controller
         // Avance de cada grupo: horas acomodadas contra horas que pide su grado
         $avance = $grupos->map(function ($grupo) use ($mph) {
             $requeridas = Materia::where('activo', true)->where('semestre', $grupo->grado)
-                ->where('tipo', '!=', 'bloque_comun')->sum('horas_semana');
+                ->sum('horas_semana');
             $asignadas = round($grupo->clases()->get()->sum->minutos / $mph, 1);
 
             return [

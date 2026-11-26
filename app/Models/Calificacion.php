@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Calificación de un alumno en una materia y un parcial.
  * Materia normal: de 5 a 10 con un decimal, o NP (no presentó).
- * Bloque común (Currículum Ampliado): A (acreditado) o N/A (no acreditado).
+ * Materia acreditable (Currículum Ampliado): A (acreditado) o N/A (no acreditado).
  */
 class Calificacion extends Model
 {
@@ -39,7 +39,7 @@ class Calificacion extends Model
     {
         $valor = strtoupper(str_replace([',', ' '], ['.', ''], trim($valor)));
 
-        if ($materia->tipo === 'bloque_comun') {
+        if ($materia->tipo === 'acreditable') {
             return in_array($valor, ['A', 'N/A', 'NA'], true) ? ($valor === 'A' ? 'A' : 'N/A') : null;
         }
 

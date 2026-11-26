@@ -6,7 +6,6 @@ use App\Horarios\Hora;
 use App\Horarios\RevisorEmpalmes;
 use App\Horarios\Semana;
 use App\Models\Aula;
-use App\Models\BloqueComun;
 use App\Models\Clase;
 use App\Models\Docente;
 use App\Models\Grupo;
@@ -59,11 +58,8 @@ class HorarioController extends Controller
             $semana->conClases($clases, $vista, $problemas);
 
             if ($vista === 'grupo') {
-                $semana->conBloquesComunes(BloqueComun::with('materia')
-                    ->where('semestre_id', $semestre->id)->where('grado', $elegido->grado)->get());
-
                 $materias = Materia::where('activo', true)->where('semestre', $elegido->grado)
-                    ->where('tipo', '!=', 'bloque_comun')->orderBy('nombre')->get();
+                    ->orderBy('nombre')->get();
                 $carga = $this->carga($elegido, $materias, $clases);
             }
         }
@@ -123,7 +119,7 @@ class HorarioController extends Controller
         return view('horarios.editar', [
             'clase' => $clase,
             'materias' => Materia::where('activo', true)->where('semestre', $clase->grupo->grado)
-                ->where('tipo', '!=', 'bloque_comun')->orderBy('nombre')->get(),
+                ->orderBy('nombre')->get(),
             'docentes' => Docente::where('activo', true)->with('materias:id')->orderBy('apellido_paterno')->get(),
             'aulas' => Aula::where('activo', true)->orderBy('clave')->get(),
             'revision' => $this->revisor->revisar($clase->only([
