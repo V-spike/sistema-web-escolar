@@ -331,3 +331,10 @@ a.bloque:hover { background: var(--superficie); border-color: var(--borde-fuerte
 .kpi__valor { color: var(--primario); }
 .btn--secundario:hover { border-color: var(--primario-borde); color: var(--primario); }
 a.enlace:hover { color: var(--primario); }
+
+/* ---------- Filtros de un listado (buscar, ordenar, mostrar) ---------- */
+.filtros { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: 1rem; }
+.filtros .campo { width: auto; }
+.filtros input[type="search"] { min-width: 240px; }
+.filtros__opcion { display: inline-flex; align-items: center; gap: .4rem; font-size: .825rem; color: var(--texto-suave); }
+.filtros__total { margin-left: auto; font-size: .825rem; }

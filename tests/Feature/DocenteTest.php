@@ -99,4 +99,32 @@ class DocenteTest extends TestCase
         $this->actingAs($this->admin())->patch("/panel/docentes/{$docente->id}/estado");
         $this->assertTrue($docente->fresh()->activo);
     }
+
+    public function test_ordenar_por_horas_de_plaza(): void
+    {
+        $docentes = $this->actingAs($this->admin())
+            ->get('/panel/docentes?orden=horas_desc')->assertOk()
+            ->viewData('docentes');
+
+        $horas = $docentes->pluck('horas_plaza')->all();
+        $this->assertSame(collect($horas)->sortDesc()->values()->all(), $horas);
+    }
+
+    public function test_buscar_y_mostrar_solo_dados_de_baja(): void
+    {
+        $this->actingAs($this->admin())
+            ->get('/panel/docentes?buscar=Acosta')->assertOk()
+            ->assertSee('Acosta')->assertDontSee('Zamudio');
+
+        Docente::where('numero_personal', 'D-092')->update(['activo' => false]);
+
+        $baja = $this->get('/panel/docentes?estado=baja')->viewData('docentes');
+        $this->assertSame(['D-092'], $baja->pluck('numero_personal')->all());
+    }
+
+    public function test_un_orden_inventado_usa_el_de_nombre(): void
+    {
+        $this->actingAs($this->admin())->get('/panel/docentes?orden=borrar_todo')->assertOk()
+            ->assertViewHas('orden', 'nombre');
+    }
 }
