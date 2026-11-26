@@ -23,7 +23,7 @@ class AulaTest extends TestCase
         $this->actingAs($this->admin())
             ->get('/panel/aulas')
             ->assertOk()
-            ->assertSee('LC-1');
+            ->assertSee('LAB-C');
     }
 
     public function test_registrar_un_aula(): void
@@ -44,7 +44,7 @@ class AulaTest extends TestCase
 
     public function test_dar_de_baja_y_reactivar(): void
     {
-        $aula = Aula::where('clave', 'A-101')->first();
+        $aula = Aula::where('clave', 'S-1')->first();
 
         $this->actingAs($this->admin())->patch("/panel/aulas/{$aula->id}/estado");
         $this->assertFalse($aula->fresh()->activo);

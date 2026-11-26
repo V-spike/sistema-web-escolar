@@ -32,9 +32,15 @@ class CatalogosSeeder extends Seeder
         }
 
         $aulas = [
-            ['clave' => 'A-101', 'edificio' => 'Edificio A', 'tipo' => 'salon', 'capacidad' => 40, 'activo' => true],
-            ['clave' => 'A-102', 'edificio' => 'Edificio A', 'tipo' => 'salon', 'capacidad' => 35, 'activo' => true],
-            ['clave' => 'LC-1', 'edificio' => 'Laboratorio de cómputo', 'tipo' => 'laboratorio', 'capacidad' => 30, 'activo' => true],
+            ['clave' => 'S-1',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-2',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-3',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-4',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-5',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-6',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'S-7',   'edificio' => 'Edificio principal',      'capacidad' => 50,  'tipo' => 'salon'],
+            ['clave' => 'LAB-C', 'edificio' => 'Laboratorio de ciencias', 'capacidad' => 40,  'tipo' => 'laboratorio'],
+            ['clave' => 'AUD',   'edificio' => 'Auditorio',               'capacidad' => 200, 'tipo' => 'auditorio'],
         ];
 
         foreach ($aulas as $datos) {
