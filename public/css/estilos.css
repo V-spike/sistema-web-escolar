@@ -474,3 +474,44 @@ a.bloque:hover { background: #E2E8F0; box-shadow: 0 2px 8px rgba(31, 57, 90, .12
 .panel--compacto { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; padding: .85rem 1.25rem; margin-bottom: 1rem; }
 .tabla-captura__actual { background: var(--primario-suave); }
 .tabla-captura thead .tabla-captura__actual { color: var(--primario); font-weight: 600; }
+
+/* =========================================================
+   Celular y tableta (va al final para ganarle a las reglas de arriba)
+   ========================================================= */
+@media (max-width: 1100px) {
+    .rejilla-2 { grid-template-columns: 1fr; }
+    .lado-horario { position: static; }
+}
+@media (max-width: 820px) {
+    /* La barra lateral pasa arriba y el menú se desliza de lado */
+    .distribucion { grid-template-columns: 1fr; }
+    .lateral { position: static; height: auto; padding: .75rem 1rem .5rem; border-right: none; border-bottom: 1px solid var(--borde); }
+    .lateral .marca { margin-bottom: .6rem; }
+    .menu { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; gap: 4px; padding-bottom: .25rem; }
+    .menu__grupo { flex-direction: row; margin: 0; padding: 0; border: none; gap: 4px; }
+    .menu__seccion { display: none; }
+    .menu__opcion { white-space: nowrap; padding: .45rem .7rem; }
+    .menu__opcion .icono { display: none; }
+
+    .encabezado { padding: .6rem 1rem; }
+    .encabezado__titulo { display: none; }
+    .encabezado__usuario { width: 100%; justify-content: space-between; }
+    .contenido { padding: 1.25rem 1rem; }
+    h1 { font-size: 1.25rem; }
+
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .kpi { border-left: none; border-top: 1px solid var(--borde); }
+    .kpi:nth-child(-n+2) { border-top: none; }
+    .kpi:nth-child(even) { border-left: 1px solid var(--borde); }
+
+    .barra-catalogo { align-items: flex-start; }
+    .filtros input[type="search"] { min-width: 0; width: 100%; }
+    .filtros__total { margin-left: 0; }
+    .formulario { padding: 1.1rem; }
+
+    /* Tablas anchas, la semana y la boleta: se deslizan de lado en lugar de salirse */
+    .semana { grid-template-columns: 44px repeat(5, minmax(110px, 1fr)); }
+    .hoja-oficial { overflow-x: auto; padding: 1rem; }
+    .formato { min-width: 640px; }
+    .pestanas { flex-wrap: wrap; }
+}
