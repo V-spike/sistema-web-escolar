@@ -64,6 +64,8 @@ class DocenteController extends Controller
 
     public function store(Request $request)
     {
+        $this->mayusculas($request);
+
         $datos = $request->validate([
             'numero_personal'  => ['required', 'string', 'max:20', 'unique:docentes,numero_personal'],
             'nombre'           => ['required', 'string', 'max:60'],
@@ -105,6 +107,8 @@ class DocenteController extends Controller
 
     public function update(Request $request, Docente $docente)
     {
+        $this->mayusculas($request);
+
         $datos = $request->validate([
             'numero_personal'  => ['required', 'string', 'max:20', Rule::unique('docentes', 'numero_personal')->ignore($docente->id)],
             'nombre'           => ['required', 'string', 'max:60'],
@@ -152,5 +156,15 @@ class DocenteController extends Controller
         $docente->usuario?->update(['activo' => $docente->activo]);
 
         return redirect()->route('docentes.index')->with('estado', 'Estado del docente actualizado.');
+    }
+
+    /** CURP y RFC se guardan en mayúsculas aunque se escriban en minúsculas */
+    private function mayusculas(Request $request): void
+    {
+        foreach (['curp', 'rfc'] as $campo) {
+            if ($request->filled($campo)) {
+                $request->merge([$campo => strtoupper(trim($request->input($campo)))]);
+            }
+        }
     }
 }

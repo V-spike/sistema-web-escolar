@@ -5,7 +5,7 @@
     // Cada opción: [texto, nombre de ruta, patrón para resaltar, ícono]
     $gestion = [
         'Horario y calificaciones' => [
-            ['Acomodar horario', 'horarios.index', 'horarios.*', 'horario'],
+            ['Armar horario', 'horarios.index', 'horarios.*', 'horario'],
             ['Calificaciones', 'calificaciones.index', ['calificaciones.*', 'boletas.*'], 'calificaciones'],
         ],
         'Catálogos de la escuela' => [

@@ -3,6 +3,7 @@
 namespace App\Horarios;
 
 use App\Models\Aula;
+use App\Models\Calificacion;
 use App\Models\Clase;
 use App\Models\Docente;
 use App\Models\Grupo;
@@ -10,7 +11,7 @@ use App\Models\Jornada;
 use App\Models\Materia;
 
 /**
- * Cambios en los catálogos que romperían un horario ya acomodado.
+ * Cambios en los catálogos que romperían un horario ya acomodado o las calificaciones ya capturadas.
  * Cada método regresa la causa (texto) si el cambio no se puede hacer, o null si sí se puede.
  */
 class Guardas
@@ -42,14 +43,28 @@ class Guardas
     public static function bajaGrupo(Grupo $grupo): ?string
     {
         $n = $grupo->clases()->count();
+        if ($n) {
+            return "No se puede dar de baja: el grupo {$grupo->nombre} tiene {$n} clases en el horario. Quítalas primero.";
+        }
 
-        return $n ? "No se puede dar de baja: el grupo {$grupo->nombre} tiene {$n} clases en el horario. Quítalas primero." : null;
+        $alumnos = $grupo->alumnos()->where('activo', true)->count();
+
+        return $alumnos ? "No se puede dar de baja: el grupo {$grupo->nombre} tiene {$alumnos} alumnos. Cámbialos de grupo primero." : null;
     }
 
     public static function cambioGrupo(Grupo $grupo, int $grado, int $semestreId): ?string
     {
-        if (($grado !== (int) $grupo->grado || $semestreId !== (int) $grupo->semestre_id) && $grupo->clases()->exists()) {
+        if ($grado === (int) $grupo->grado && $semestreId === (int) $grupo->semestre_id) {
+            return null;
+        }
+
+        if ($grupo->clases()->exists()) {
             return "No puedes cambiar el grado ni el semestre del grupo {$grupo->nombre}: ya tiene clases en el horario.";
+        }
+
+        // Sus alumnos ya tienen calificaciones de las materias de este grado
+        if (Calificacion::whereIn('alumno_id', $grupo->alumnos()->pluck('id'))->exists()) {
+            return "No puedes cambiar el grado ni el semestre del grupo {$grupo->nombre}: sus alumnos ya tienen calificaciones.";
         }
 
         return null;
@@ -65,8 +80,14 @@ class Guardas
     public static function bajaMateria(Materia $materia): ?string
     {
         $n = Clase::where('materia_id', $materia->id)->count();
+        if ($n) {
+            return "No se puede dar de baja: {$materia->nombre} está {$n} veces en el horario. Quítala primero.";
+        }
 
-        return $n ? "No se puede dar de baja: {$materia->nombre} está {$n} veces en el horario. Quítala primero." : null;
+        // Si se da de baja, sus calificaciones dejarían de salir en las boletas
+        return Calificacion::where('materia_id', $materia->id)->exists()
+            ? "No se puede dar de baja: {$materia->nombre} ya tiene calificaciones capturadas."
+            : null;
     }
 
     public static function cambioMateria(Materia $materia, int $semestre, string $tipo, int $horas): ?string
@@ -75,6 +96,12 @@ class Guardas
 
         if ($clases->isNotEmpty() && ($semestre !== (int) $materia->semestre || $tipo !== $materia->tipo)) {
             return "No puedes cambiar el semestre ni el tipo de {$materia->nombre}: ya está en el horario.";
+        }
+
+        // Una materia con números no puede volverse de A o N/A (ni al revés) si ya tiene calificaciones
+        if (($semestre !== (int) $materia->semestre || $tipo !== $materia->tipo)
+            && Calificacion::where('materia_id', $materia->id)->exists()) {
+            return "No puedes cambiar el semestre ni el tipo de {$materia->nombre}: ya tiene calificaciones capturadas.";
         }
 
         $mph = max(1, Jornada::actual()->minutos_por_hora);

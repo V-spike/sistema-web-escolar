@@ -44,7 +44,7 @@ Todos usan la contraseña `Escolar2026`.
 php artisan test
 ```
 
-Las pruebas están en `tests/Feature/`, un archivo por módulo. Usan su propia base de datos en memoria, así que no tocan tus datos.
+Las pruebas están en `tests/Feature/`, un archivo por módulo. `RecorridoTest` entra con cada rol a todas las pantallas para comprobar que ninguna falla. Usan su propia base de datos en memoria, así que no tocan tus datos.
 
 ## Estructura
 

@@ -84,4 +84,42 @@ class GuardasTest extends TestCase
         $this->patch("/panel/docentes/{$libre->id}/estado")->assertSessionHasNoErrors();
         $this->assertFalse($libre->fresh()->activo);
     }
+
+    public function test_no_se_da_de_baja_un_grupo_con_alumnos(): void
+    {
+        // 1.º B no tiene clases, pero sí los 15 alumnos de ejemplo
+        $grupo = Grupo::where('letra', 'B')->first();
+
+        $this->patch("/panel/grupos/{$grupo->id}/estado")->assertSessionHasErrors('estado');
+        $this->assertTrue($grupo->fresh()->activo);
+    }
+
+    public function test_una_materia_con_calificaciones_no_se_da_de_baja_ni_cambia_de_tipo(): void
+    {
+        $ingles = Materia::where('clave', 'ING1')->first();
+        \App\Models\Calificacion::create([
+            'semestre_id' => Semestre::activo()->id, 'alumno_id' => User::where('rol', 'alumno')->first()->id,
+            'materia_id' => $ingles->id, 'parcial' => 1, 'valor' => '9',
+        ]);
+
+        $this->patch("/panel/materias/{$ingles->id}/estado")->assertSessionHasErrors('estado');
+
+        $this->put("/panel/materias/{$ingles->id}", [
+            'clave' => $ingles->clave, 'nombre' => $ingles->nombre, 'horas_semana' => $ingles->horas_semana,
+            'clave_corta' => $ingles->clave_corta, 'semestre' => 1, 'tipo' => 'acreditable',
+        ])->assertSessionHasErrors();
+        $this->assertSame('normal', $ingles->fresh()->tipo);
+    }
+
+    public function test_curp_y_rfc_del_docente_se_guardan_en_mayusculas(): void
+    {
+        $this->post('/panel/docentes', [
+            'numero_personal' => 'D-200', 'nombre' => 'Ana', 'apellido_paterno' => 'Prueba', 'horas_plaza' => 10,
+            'curp' => 'prua800101mvzrnn09', 'rfc' => 'prua800101ab1',
+        ])->assertSessionHasNoErrors();
+
+        $docente = Docente::where('numero_personal', 'D-200')->first();
+        $this->assertSame('PRUA800101MVZRNN09', $docente->curp);
+        $this->assertSame('PRUA800101AB1', $docente->rfc);
+    }
 }
