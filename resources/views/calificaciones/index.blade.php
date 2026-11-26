@@ -20,28 +20,34 @@
 
 @if (! $semestre)
     <div class="mensaje mensaje--aviso">Primero marca un semestre como activo.</div>
-@elseif ($porGrupo->isEmpty())
+@elseif ($grupos->isEmpty())
     <div class="mensaje mensaje--aviso">
         {{ $esAdmin ? 'No hay grupos activos en este semestre.' : 'Todavía no tienes clases asignadas en el horario de este semestre.' }}
     </div>
 @endif
 
 {{-- Un panel por grupo con sus materias --}}
-@foreach ($porGrupo as $asignaciones)
-    @php $grupo = $asignaciones->first()['grupo']; @endphp
+@foreach ($grupos as $grupo)
+    @php $asignaciones = $porGrupo[$grupo->id] ?? collect(); @endphp
     <div class="panel">
         <div class="panel__titulo">
-            <h2>{{ $grupo->nombre }} <span class="tenue" style="font-weight:400">· {{ $asignaciones->first()['alumnos'] }} alumnos</span></h2>
+            <h2>{{ $grupo->nombre }} <span class="tenue" style="font-weight:400">· {{ $grupo->alumnos()->where('activo', true)->count() }} alumnos</span></h2>
             <div class="barra-catalogo__acciones">
                 @if ($esAdmin)
                     @foreach ($parciales as $p)
                         <a href="{{ route('calificaciones.informe', [$grupo, 'parcial' => $p]) }}" class="btn btn--secundario btn--chico btn--enlace">Informe {{ $p }}P</a>
                     @endforeach
                 @endif
+                @if ($esAdmin || in_array($grupo->id, $tutorDe))
+                    <a href="{{ route('calificaciones.conducta', $grupo) }}" class="btn btn--secundario btn--chico btn--enlace">Conducta</a>
+                @endif
                 <a href="{{ route('boletas.grupo', $grupo) }}" class="btn btn--primario btn--chico btn--enlace">Boletas para imprimir</a>
             </div>
         </div>
 
+        @if ($asignaciones->isEmpty())
+            <p class="tenue" style="margin:0">Eres tutor de este grupo: aquí capturas su conducta del semestre.</p>
+        @else
         <div class="tabla-contenedor">
             <table class="tabla-catalogo">
                 <thead>
@@ -71,6 +77,7 @@
                 </tbody>
             </table>
         </div>
+        @endif
     </div>
 @endforeach
 @endsection

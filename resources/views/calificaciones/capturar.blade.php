@@ -29,13 +29,13 @@
     </div>
     <span class="tenue">
         {{ $esBloque ? 'Escribe A (acreditado) o N/A (no acreditado).' : 'Escribe de 5 a 10 con un decimal, o NP si no presentó.' }}
-        Deja vacío para quitar la calificación.
+        Deja vacío para quitar la calificación. Las faltas son opcionales.
     </span>
 </div>
 
 @if ($errors->any())
     <div class="alerta alerta--empalme">
-        <h3>No se guardó nada. Revisa estas calificaciones:</h3>
+        <h3>No se guardó nada. Revisa estos datos:</h3>
         <ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>
     </div>
 @endif
@@ -48,12 +48,24 @@
     @method('PUT')
     <input type="hidden" name="parcial" value="{{ $parcial }}">
 
+    {{-- Una vez por parcial: cuántas clases se dieron (la boleta suma las de los parciales) --}}
+    <div class="panel panel--compacto">
+        <label for="impartidas" class="campo__etiqueta" style="margin:0">Clases impartidas en el parcial {{ $parcial }}</label>
+        <input id="impartidas" name="impartidas" type="number" min="0" max="200"
+               value="{{ old('impartidas', $impartidas[$parcial] ?? '') }}"
+               class="campo campo--calificacion @error('impartidas') campo--error @enderror">
+        <span class="campo__ayuda" style="margin:0">Las faltas de cada alumno no pueden pasar de este número.</span>
+    </div>
+
+    @php $otros = array_values(array_diff($parciales, [$parcial])); @endphp
     <div class="tabla-contenedor">
         <table class="tabla-catalogo tabla-captura">
             <thead>
                 <tr>
                     <th>No.</th><th>Alumno</th><th>Matrícula</th>
-                    @foreach ($parciales as $p) <th>Parcial {{ $p }}</th> @endforeach
+                    @foreach ($otros as $p) <th class="centrado">Parcial {{ $p }}</th> @endforeach
+                    <th class="centrado tabla-captura__actual">Calificación P{{ $parcial }}</th>
+                    <th class="centrado tabla-captura__actual">Faltas P{{ $parcial }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,19 +74,28 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $alumno->name }}</td>
                     <td class="tenue">{{ $alumno->matricula }}</td>
-                    @foreach ($parciales as $p)
-                        <td>
-                            @if ($p === $parcial)
-                                {{-- Solo el parcial elegido se puede escribir --}}
-                                <input type="text" name="valores[{{ $alumno->id }}]" maxlength="4" inputmode="decimal"
-                                       value="{{ old("valores.{$alumno->id}", $valores[$alumno->id][$p] ?? '') }}"
-                                       class="campo campo--calificacion @error("valores.{$alumno->id}") campo--error @enderror"
-                                       aria-label="Parcial {{ $p }} de {{ $alumno->name }}">
-                            @else
-                                <span class="tenue">{{ $valores[$alumno->id][$p] ?? '—' }}</span>
-                            @endif
+
+                    {{-- Los otros parciales solo se ven: calificación y faltas --}}
+                    @foreach ($otros as $p)
+                        <td class="centrado tenue">
+                            {{ $valores[$alumno->id][$p] ?? '—' }}
+                            @if (! empty($faltas[$alumno->id][$p])) <small>· {{ $faltas[$alumno->id][$p] }} f</small> @endif
                         </td>
                     @endforeach
+
+                    {{-- El parcial elegido se escribe --}}
+                    <td class="centrado tabla-captura__actual">
+                        <input type="text" name="valores[{{ $alumno->id }}]" maxlength="4" inputmode="decimal"
+                               value="{{ old("valores.{$alumno->id}", $valores[$alumno->id][$parcial] ?? '') }}"
+                               class="campo campo--calificacion @error("valores.{$alumno->id}") campo--error @enderror"
+                               aria-label="Calificación del parcial {{ $parcial }} de {{ $alumno->name }}">
+                    </td>
+                    <td class="centrado tabla-captura__actual">
+                        <input type="number" name="faltas[{{ $alumno->id }}]" min="0" max="200"
+                               value="{{ old("faltas.{$alumno->id}", $faltas[$alumno->id][$parcial] ?? '') }}"
+                               class="campo campo--calificacion @error("faltas.{$alumno->id}") campo--error @enderror"
+                               aria-label="Faltas del parcial {{ $parcial }} de {{ $alumno->name }}">
+                    </td>
                 </tr>
             @endforeach
             </tbody>

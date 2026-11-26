@@ -29,6 +29,7 @@
                     <th>Materia</th>
                     @foreach ($parciales as $p) <th>Parcial {{ $p }}</th> @endforeach
                     <th>Final</th>
+                    <th>Faltas</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +44,7 @@
                         <td @class(['calif', 'calif--baja' => $reprobada, 'calif--vacia' => $valor === null])>{{ $valor ?? '—' }}</td>
                     @endforeach
                     <td class="calif calif--final">{{ $fila['final_texto'] ?: '—' }}</td>
+                    <td class="calif calif--vacia">{{ $fila['faltas'] ?? '—' }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -51,6 +53,7 @@
                     <td>Promedio</td>
                     @foreach ($parciales as $p) <td class="calif">{{ $boleta->promedioParcial[$p] ?? '—' }}</td> @endforeach
                     <td class="calif calif--final">{{ $boleta->promedioGeneral ?? '—' }}</td>
+                    <td class="calif">{{ collect($boleta->filas)->sum(fn ($f) => $f['faltas'] ?? 0) ?: '—' }}</td>
                 </tr>
             </tfoot>
         </table>

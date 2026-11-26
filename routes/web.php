@@ -60,6 +60,8 @@ Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->g
 // ---------- Calificaciones: docentes (sus grupos) y administración (todos) ----------
 Route::middleware(['auth', 'sin-cache', 'rol:docente,administrador,superusuario'])->prefix('panel')->group(function () {
     Route::get('calificaciones', [CalificacionController::class, 'index'])->name('calificaciones.index');
+    Route::get('conducta/{grupo}', [CalificacionController::class, 'conducta'])->name('calificaciones.conducta');
+    Route::put('conducta/{grupo}', [CalificacionController::class, 'guardarConducta'])->name('calificaciones.conducta.guardar');
     Route::get('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'capturar'])->name('calificaciones.capturar');
     Route::put('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'guardar'])->name('calificaciones.guardar');
 

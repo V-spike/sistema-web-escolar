@@ -75,8 +75,8 @@
         @foreach ($boleta->filas as $fila)
             <tr>
                 <td class="formato__nombre">{{ mb_strtoupper($fila['materia']->nombre) }}</td>
-                <td></td>
-                <td></td>
+                <td>{{ $fila['clases'] ?? '' }}</td>
+                <td>{{ $fila['faltas'] ?? '' }}</td>
                 @foreach ($parciales as $p) <td>{{ $fila['parciales'][$p] ?? '-' }}</td> @endforeach
                 <td>{{ $fila['final'] ?? '' }}</td>
                 <td>{{ $fila['final_texto'] }}</td>
@@ -106,7 +106,7 @@
         <tr>
             <td></td><td></td><td></td><td></td>
             <td></td>
-            <td></td><td></td><td></td>
+            <td>{{ $marca($boleta->conducta === 'buena') }}</td><td>{{ $marca($boleta->conducta === 'regular') }}</td><td>{{ $marca($boleta->conducta === 'mala') }}</td>
             @foreach ($parciales as $p) <td>{{ $boleta->promedioParcial[$p] ?? '' }}</td> @endforeach
             <td>{{ $boleta->promedioGeneral ?? '' }}</td>
             <td class="formato__letra">{{ App\Calificaciones\Letra::de($boleta->promedioGeneral) }}</td>
