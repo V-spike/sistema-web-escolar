@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Docente;
 use App\Models\Materia;
+use App\Horarios\Guardas;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -22,7 +23,7 @@ class DocenteController extends Controller
     public function create()
     {
         $materias = Materia::where('activo', true)
-            ->where('tipo', 'normal')
+            ->where('tipo', '!=', 'bloque_comun')
             ->orderBy('semestre')
             ->orderBy('nombre')
             ->get();
@@ -61,7 +62,7 @@ class DocenteController extends Controller
         $docente->load('materias');
 
         $materias = Materia::where('activo', true)
-            ->where('tipo', 'normal')
+            ->where('tipo', '!=', 'bloque_comun')
             ->orderBy('semestre')
             ->orderBy('nombre')
             ->get();
@@ -89,6 +90,11 @@ class DocenteController extends Controller
             'materias.*'       => ['exists:materias,id'],
         ]);
 
+        $materias = array_map('intval', $request->input('materias', []));
+        if ($causa = Guardas::cambioDocente($docente, $materias, (int) $datos['horas_plaza'])) {
+            return back()->withInput()->withErrors(['materias' => $causa]);
+        }
+
         $docente->update(collect($datos)->except('materias')->all());
         $docente->materias()->sync($request->input('materias', []));
 
@@ -97,6 +103,10 @@ class DocenteController extends Controller
 
     public function cambiarEstado(Docente $docente)
     {
+        if ($docente->activo && $causa = Guardas::bajaDocente($docente)) {
+            return redirect()->route('docentes.index')->withErrors(['estado' => $causa]);
+        }
+
         $docente->update(['activo' => ! $docente->activo]);
 
         return redirect()->route('docentes.index')->with('estado', 'Estado del docente actualizado.');

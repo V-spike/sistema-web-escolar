@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
-@section('titulo', 'Panel del superusuario')
+@section('titulo', 'Inicio')
 
 @section('menu')
     @include('panel.menu')
 @endsection
 
 @section('contenido')
-    <h1>Bienvenido, {{ auth()->user()->name }}</h1>
-    <p>Panel provisional del superusuario. Las opciones del menú se activan en los siguientes Sprints.</p>
+    @include('panel._resumen')
 @endsection

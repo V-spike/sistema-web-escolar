@@ -5,8 +5,9 @@
 
 @section('contenido')
     <div class="tarjeta tarjeta--login">
-        <h1>Sistema escolar</h1>
-        <p>Inicia sesión con tu cuenta</p>
+        <div class="marca"><span class="marca__logo">SE</span> Sistema escolar</div>
+        <h1>Bienvenido de nuevo</h1>
+        <p class="tenue">Inicia sesión con tu cuenta institucional.</p>
 
         {{-- Aviso de otra pantalla, por ejemplo al cambiar la contraseña --}}
         @if (session('estado'))
@@ -27,7 +28,7 @@
             <label class="campo__etiqueta" for="clave">Contraseña</label>
             <input class="campo" type="password" id="clave" name="password" required>
 
-            <button class="btn btn--primario" type="submit">Entrar</button>
+            <button class="btn btn--primario" type="submit" style="margin-top:1.25rem">Entrar</button>
         </form>
 
         <a class="enlace" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>

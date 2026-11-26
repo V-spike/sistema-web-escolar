@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Horarios\Guardas;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Aula;
@@ -58,6 +59,10 @@ class AulaController extends Controller
      */
     public function cambiarEstado(Aula $aula)
     {
+        if ($aula->activo && $causa = Guardas::bajaAula($aula)) {
+            return redirect()->route('aulas.index')->withErrors(['estado' => $causa]);
+        }
+
         $aula->activo = ! $aula->activo;
         $aula->save();
 

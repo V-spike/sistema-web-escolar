@@ -27,7 +27,7 @@
            class="campo @error('horas_semana') campo--error @enderror" required>
     @error('horas_semana') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
 
-        <label for="clave_corta" class="campo__etiqueta">Clave corta</label>
+    <label for="clave_corta" class="campo__etiqueta">Clave corta</label>
     <input id="clave_corta" name="clave_corta" type="text" maxlength="10"
            value="{{ old('clave_corta', $materia->clave_corta ?? '') }}"
            class="campo @error('clave_corta') campo--error @enderror" required>
@@ -51,14 +51,6 @@
     </select>
     @error('tipo') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
 
-        <label for="tipo" class="campo__etiqueta">Tipo</label>
-    <select id="tipo" name="tipo"
-            class="campo @error('tipo') campo--error @enderror" required>
-        @foreach (['salon' => 'Salón', 'laboratorio' => 'Laboratorio', 'auditorio' => 'Auditorio'] as $valor => $texto)
-            <option value="{{ $valor }}" @selected(old('tipo', $aula->tipo ?? 'salon') === $valor)>{{ $texto }}</option>
-        @endforeach
-    </select>
-    @error('tipo') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
     
     <div class="formulario__acciones">
         <button type="submit" class="btn btn--primario">Guardar</button>

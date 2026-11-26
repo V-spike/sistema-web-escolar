@@ -14,9 +14,15 @@ class DatabaseSeeder extends Seeder
         $this->call(UsuariosSeeder::class);
         $this->call(SemestreSeeder::class);
         $this->call(CatalogosSeeder::class);
-        $this->call(FranjaSeeder::class);
+        $this->call(JornadaSeeder::class);
         $this->call(BloqueComunSeeder::class);
         $this->call(DocentesSeeder::class);
         $this->call(GruposSeeder::class);
+        $this->call(DisponibilidadSeeder::class);
+
+        // El horario de ejemplo tarda unos segundos: en las pruebas automáticas no se carga
+        if (! app()->runningUnitTests()) {
+            $this->call(HorarioDemoSeeder::class);
+        }
     }
 }
