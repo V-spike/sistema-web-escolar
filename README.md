@@ -19,7 +19,7 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
-Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 28 docentes, 7 grupos de primero y un horario ya acomodado.
+Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 92 docentes, 7 grupos de primero con 15 alumnos inventados (de 1.º A a 1.º F) y calificaciones de ejemplo. El horario queda vacío para acomodarlo a mano.
 
 Los nombres que firman la boleta van en `.env` (`ESCUELA_DIRECTOR` y `ESCUELA_SUBDIRECTOR`).
 
@@ -80,7 +80,7 @@ _to_delete/           Archivos que ya no se usan, con su registro
 
 - **Superusuario**: todo lo del administrador y además da de alta administradores.
 - **Administrador**: catálogos, horario, docentes (con su cuenta para entrar), grupos, alumnos, calificaciones, informes por grupo y boletas.
-- **Docente**: ve su horario y captura las calificaciones por parcial de los grupos donde da clase.
-- **Alumno**: ve su horario y "Mi boleta", que se imprime o se guarda en PDF con el formato de la escuela.
+- **Docente**: ve su horario, captura las calificaciones por parcial de los grupos donde da clase e imprime sus boletas.
+- **Alumno**: ve su horario y "Mis calificaciones" (cada materia con sus parciales).
 
 Nada se borra de los catálogos: se da de baja y se puede reactivar. El sistema no deja dar de baja algo que todavía tiene clases en el horario.

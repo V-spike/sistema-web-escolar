@@ -72,6 +72,7 @@ class CuentasTest extends TestCase
     {
         $grupo = Grupo::where('letra', 'A')->first();
         $docente = Docente::where('numero_personal', 'D-008')->first();
+        Docente::where('user_id', $this->usuario('docente')->id)->update(['user_id' => null]);   // el seeder la liga a D-001
         $docente->update(['user_id' => $this->usuario('docente')->id]);
         User::where('email', 'alumno@escolar.test')->update(['grupo_id' => $grupo->id]);
 

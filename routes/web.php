@@ -62,19 +62,21 @@ Route::middleware(['auth', 'sin-cache', 'rol:docente,administrador,superusuario'
     Route::get('calificaciones', [CalificacionController::class, 'index'])->name('calificaciones.index');
     Route::get('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'capturar'])->name('calificaciones.capturar');
     Route::put('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'guardar'])->name('calificaciones.guardar');
+
+    // Boletas para imprimir (el docente solo las de sus grupos; lo revisa BoletaController)
+    Route::get('boletas/grupo/{grupo}', [BoletaController::class, 'grupo'])->name('boletas.grupo');
+    Route::get('boletas/alumno/{alumno}', [BoletaController::class, 'alumno'])->name('boletas.alumno');
 });
 
-// ---------- Boleta del alumno ----------
+// ---------- El alumno ve sus calificaciones ----------
 Route::middleware(['auth', 'sin-cache', 'rol:alumno'])->prefix('panel')->group(function () {
-    Route::get('mi-boleta', [BoletaController::class, 'mia'])->name('boletas.mia');
+    Route::get('mis-calificaciones', [BoletaController::class, 'misCalificaciones'])->name('calificaciones.mias');
 });
 
 // ---------- Administrador y superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
-    // Informe de calificaciones y boletas
+    // Informe de calificaciones del grupo
     Route::get('informes/{grupo}', [CalificacionController::class, 'informe'])->name('calificaciones.informe');
-    Route::get('boletas/grupo/{grupo}', [BoletaController::class, 'grupo'])->name('boletas.grupo');
-    Route::get('boletas/alumno/{alumno}', [BoletaController::class, 'alumno'])->name('boletas.alumno');
 
     // Horario: acomodar clases sin empalmes
     Route::get('horarios', [HorarioController::class, 'index'])->name('horarios.index');

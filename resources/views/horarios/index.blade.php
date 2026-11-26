@@ -75,9 +75,14 @@
         </div>
 
         @if ($vista === 'grupo')
-            <div class="no-imprimir">
+            @php
+                $horas = fn ($n) => rtrim(rtrim(number_format($n, 1), '0'), '.');
+                $totalAsignadas = $carga->sum('asignadas');
+                $totalRequeridas = $carga->sum('requeridas');
+            @endphp
+            <aside class="lado-horario no-imprimir">
                 <div class="panel">
-                    <h2>Agregar clase a {{ $elegido->nombre }}</h2>
+                    <h2 class="lado-horario__titulo">Agregar clase a {{ $elegido->nombre }}</h2>
                     @include('horarios._formulario', [
                         'accion' => route('horarios.store'),
                         'metodo' => 'POST',
@@ -86,20 +91,26 @@
                 </div>
 
                 <div class="panel">
-                    <h2>Horas del grupo</h2>
-                    <ul class="lista-simple carga">
+                    <div class="panel__titulo">
+                        <h2 class="lado-horario__titulo">Horas del grupo</h2>
+                        <span class="tenue">{{ $horas($totalAsignadas) }} de {{ $totalRequeridas }} h</span>
+                    </div>
+                    <ul class="carga">
                         @forelse ($carga as $fila)
-                            <li @class(['carga__completa' => $fila['completa']])>
-                                <span>{{ $fila['materia']->nombre }}</span>
-                                <strong>{{ rtrim(rtrim(number_format($fila['asignadas'], 1), '0'), '.') }} / {{ $fila['requeridas'] }} h</strong>
+                            @php $faltan = max(0, $fila['requeridas'] - $fila['asignadas']); @endphp
+                            <li @class(['carga__fila', 'carga__completa' => $fila['completa']])>
+                                <span class="carga__materia" title="{{ $fila['materia']->nombre }}">{{ $fila['materia']->clave_corta }}</span>
                                 <div class="barra-progreso"><i style="width: {{ $fila['requeridas'] ? min(100, $fila['asignadas'] * 100 / $fila['requeridas']) : 0 }}%"></i></div>
+                                <span class="carga__horas">
+                                    @if ($fila['completa']) ✓ {{ $fila['requeridas'] }} h @else faltan {{ $horas($faltan) }} h @endif
+                                </span>
                             </li>
                         @empty
                             <li>No hay materias activas de {{ $elegido->grado }}.º semestre.</li>
                         @endforelse
                     </ul>
                 </div>
-            </div>
+            </aside>
         @endif
     </div>
 @endif
