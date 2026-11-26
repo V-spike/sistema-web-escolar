@@ -303,3 +303,8 @@ a.bloque:hover { box-shadow: var(--sombra-alta); z-index: 3; transform: translat
     .solo-imprimir { display: block !important; }
 }
 .solo-imprimir { display: none; }
+
+/* ---------- Páginas de error ---------- */
+.error-pagina { text-align: center; }
+.error-pagina__codigo { font-size: 3rem; font-weight: 700; color: var(--texto-tenue); margin: 0; }
+.error-pagina .btn { width: auto; margin-top: 1rem; }
