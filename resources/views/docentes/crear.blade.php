@@ -71,11 +71,6 @@
                 class="campo @error('sindicato') campo--error @enderror">
             @error('sindicato') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
 
-            <label for="titulo" class="campo__etiqueta">Título</label>
-            <input id="titulo" name="titulo" type="text" maxlength="100" value="{{ old('titulo', $docente->titulo ?? '') }}"
-                class="campo @error('titulo') campo--error @enderror">
-            @error('titulo') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
-
             <label for="cedula" class="campo__etiqueta">Cédula profesional</label>
             <input id="cedula" name="cedula" type="text" maxlength="20" value="{{ old('cedula', $docente->cedula ?? '') }}"
                 class="campo @error('cedula') campo--error @enderror">
@@ -87,7 +82,10 @@
             @error('horas_plaza') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
         </fieldset>
 
-        {{-- 3. Perfil: materias que puede impartir --}}
+        {{-- 3. Formación --}}
+        @include('docentes._formacion')
+
+        {{-- 4. Perfil: materias que puede impartir --}}
         @php
             $elegidas = old('materias', isset($docente) ? $docente->materias->pluck('id')->all() : []);
         @endphp

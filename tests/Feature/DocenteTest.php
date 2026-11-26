@@ -31,9 +31,13 @@ class DocenteTest extends TestCase
         $this->actingAs($docente)->get('/panel/docentes')->assertForbidden();
     }
 
-    public function test_la_lista_muestra_los_28_docentes_del_seeder(): void
+    public function test_la_lista_muestra_los_92_docentes_del_seeder(): void
     {
-        $this->assertSame(28, Docente::count());
+        $this->assertSame(92, Docente::count());
+
+        // La formación viene del archivo de la escuela
+        $this->assertSame('Derecho', Docente::where('numero_personal', 'D-001')->value('licenciatura'));
+        $this->assertSame('Educación', Docente::where('numero_personal', 'D-022')->value('doctorado'));
 
         $this->actingAs($this->admin())
             ->get('/panel/docentes')
@@ -60,12 +64,16 @@ class DocenteTest extends TestCase
                 'nombre' => 'Ana',
                 'apellido_paterno' => 'Prueba',
                 'horas_plaza' => 20,
+                'licenciatura' => 'Matemáticas',
+                'maestria' => 'Educación',
                 'materias' => [$materia->id],
             ])
             ->assertRedirect('/panel/docentes');
 
         $docente = Docente::where('numero_personal', 'D-100')->first();
         $this->assertNotNull($docente);
+        $this->assertSame('Matemáticas', $docente->licenciatura);
+        $this->assertSame('Educación', $docente->maestria);
         $this->assertTrue($docente->materias->contains($materia));
     }
 
