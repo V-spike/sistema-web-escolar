@@ -128,3 +128,9 @@ body { margin: 0; font-family: var(--fuente); color: var(--color-texto); backgro
     background: #FDECEA;           /* rojo suave */
     border-color: var(--color-error);
 }
+.campo__ayuda {
+    display: block;
+    font-size: 0.8rem;
+    color: #6B7280;
+    margin-top: -2px;
+}
