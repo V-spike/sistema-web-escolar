@@ -8,12 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
-    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=7">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon-escuela.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=10">
 </head>
 <body>
     <div class="distribucion">
         <aside class="lateral">
-            <div class="marca"><span class="marca__logo">SE</span> Sistema escolar</div>
+            @include('componentes.marca')
             <nav class="menu">@yield('menu')</nav>
         </aside>
 

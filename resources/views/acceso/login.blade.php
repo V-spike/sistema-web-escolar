@@ -5,7 +5,7 @@
 
 @section('contenido')
     <div class="tarjeta tarjeta--login">
-        <div class="marca"><span class="marca__logo">SE</span> Sistema escolar</div>
+        @include('componentes.marca')
         <h1>Bienvenido de nuevo</h1>
         <p class="tenue">Inicia sesión con tu cuenta institucional.</p>
 
@@ -33,4 +33,5 @@
 
         <a class="enlace" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
     </div>
+    <p class="pie-escuela">{{ config('escolar.escuela.direccion_general') }} · Clave {{ config('escolar.escuela.clave') }} · {{ config('escolar.escuela.localidad') }}</p>
 @endsection

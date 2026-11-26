@@ -1,7 +1,7 @@
 /* =========================================================
    Sistema web escolar · hoja de estilos
-   Estilo minimalista: fondo blanco, grises neutros y un solo
-   color de acento (azul marino). Una sola tipografía: Inter.
+   Estilo minimalista con los colores del logo de la escuela:
+   azul marino (principal) y verde (acento). Una sola tipografía: Inter.
    Orden: 1) variables  2) base  3) botones  4) formularios
           5) mensajes  6) login  7) distribución  8) tablas
           9) tarjetas  10) horario  11) celular  12) impresión
@@ -9,10 +9,14 @@
 
 /* ---------- 1. Variables: cambia aquí los colores de todo el sistema ---------- */
 :root {
-    --primario: #1E3A5F;          /* acento: botones y opción activa */
-    --primario-hover: #152B47;
-    --primario-suave: #EEF2F7;
-    --primario-borde: #C9D4E3;
+    /* Colores del logo */
+    --primario: #1F395A;          /* azul marino: botones, encabezados de la marca */
+    --primario-hover: #172C46;
+    --primario-suave: #EDF1F6;
+    --primario-borde: #C5D0DE;
+    --acento: #62B22D;            /* verde: opción activa, avance, detalles */
+    --acento-oscuro: #3E7A1C;     /* verde para texto (se lee mejor sobre blanco) */
+    --acento-suave: #EFF7E9;
 
     --fondo: #FAFAFA;
     --superficie: #FFFFFF;
@@ -23,7 +27,7 @@
     --borde-fuerte: #D4D4D8;
     --gris-claro: #F4F4F5;
 
-    --exito: #15803D;   --exito-suave: #F0FDF4;
+    --exito: #3E7A1C;   --exito-suave: #EFF7E9;
     --error: #B91C1C;   --error-suave: #FEF2F2;
     --aviso: #A16207;   --aviso-suave: #FEFCE8;
 
@@ -32,7 +36,6 @@
     --radio-chico: 6px;
 
     /* Nombres anteriores, por si alguna vista los usa */
-    --acento: var(--primario);
     --color-primario: var(--primario);
     --color-primario-claro: var(--primario-suave);
     --color-fondo: var(--fondo);
@@ -133,11 +136,12 @@ small, .tenue { color: var(--texto-suave); }
 .tarjeta--login { width: 100%; max-width: 380px; }
 .tarjeta--login h1 { font-size: 1.25rem; margin-bottom: .35rem; }
 .tarjeta--login h1 + .tenue { margin-bottom: 1.5rem; }
-.marca { display: flex; align-items: center; gap: .6rem; font-weight: 600; font-size: .95rem; color: var(--texto); margin-bottom: 2rem; }
-.marca__logo {
-    width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; color: #fff;
-    background: var(--primario); font-size: .75rem; font-weight: 600; letter-spacing: .02em;
-}
+.marca { display: flex; align-items: center; gap: .7rem; font-weight: 600; font-size: .95rem; color: var(--texto); margin-bottom: 2rem; }
+/* El logo es un PNG con fondo transparente: no se deforma ni deja orillas de color */
+.marca__logo { width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; }
+.tarjeta--login .marca { flex-direction: column; text-align: center; gap: .75rem; }
+.tarjeta--login .marca__logo { width: 88px; height: 88px; }
+.tarjeta--login > h1, .tarjeta--login > h1 + .tenue { text-align: center; }
 .enlace { display: block; margin-top: 1.25rem; text-align: center; color: var(--texto-suave); font-size: .85rem; }
 .enlace:hover { color: var(--texto); }
 
@@ -160,7 +164,7 @@ small, .tenue { color: var(--texto-suave); }
     text-decoration: none; font-size: .875rem;
 }
 .menu__opcion:hover { background: var(--gris-claro); color: var(--texto); }
-.menu__opcion--activa { background: var(--gris-claro); color: var(--texto); font-weight: 500; }
+.menu__opcion--activa { background: var(--primario-suave); color: var(--primario); font-weight: 500; box-shadow: inset 3px 0 0 var(--acento); }
 .menu__opcion--pendiente { color: var(--texto-tenue); cursor: not-allowed; }
 .principal { min-width: 0; display: flex; flex-direction: column; background: var(--superficie); }
 .encabezado {
@@ -218,7 +222,7 @@ small, .tenue { color: var(--texto-suave); }
 .bienvenida p { color: var(--texto-suave); margin: 0; }
 .rejilla-2 { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1.5rem; align-items: start; }
 .barra-progreso { height: 4px; background: var(--gris-claro); border-radius: 999px; overflow: hidden; }
-.barra-progreso i { display: block; height: 100%; background: var(--primario); border-radius: 999px; }
+.barra-progreso i { display: block; height: 100%; background: var(--acento); border-radius: 999px; }
 .lista-simple { list-style: none; margin: 0; padding: 0; }
 .lista-simple li { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid var(--borde); font-size: .875rem; }
 .lista-simple li:last-child { border-bottom: none; }
@@ -229,7 +233,7 @@ small, .tenue { color: var(--texto-suave); }
 /* Selector de vista (grupo, docente, aula) */
 .pestanas { display: inline-flex; border: 1px solid var(--borde); border-radius: var(--radio-chico); padding: 2px; gap: 2px; }
 .pestanas a { padding: .32rem .8rem; border-radius: 4px; text-decoration: none; color: var(--texto-suave); font-weight: 500; font-size: .825rem; }
-.pestanas a.activa { background: var(--gris-claro); color: var(--texto); }
+.pestanas a.activa { background: var(--primario); color: #fff; }
 .selector { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
 .selector .campo { width: auto; min-width: 220px; }
 
@@ -258,8 +262,8 @@ small, .tenue { color: var(--texto-suave); }
 a.bloque:hover { background: var(--superficie); border-color: var(--borde-fuerte); z-index: 3; }
 .bloque b { display: block; font-size: .75rem; font-weight: 600; }
 .bloque span { display: block; color: var(--texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bloque--c1 { border-left-color: #1E3A5F; }
-.bloque--c2 { border-left-color: #0F766E; }
+.bloque--c1 { border-left-color: #1F395A; }
+.bloque--c2 { border-left-color: #62B22D; }
 .bloque--c3 { border-left-color: #B45309; }
 .bloque--c4 { border-left-color: #7C3AED; }
 .bloque--c5 { border-left-color: #0369A1; }
@@ -315,3 +319,15 @@ a.bloque:hover { background: var(--superficie); border-color: var(--borde-fuerte
     .solo-imprimir { display: block !important; }
 }
 .solo-imprimir { display: none; }
+
+/* ---------- Nombre de la escuela ---------- */
+.marca__escuela { display: block; font-size: .72rem; font-weight: 400; color: var(--texto-tenue); line-height: 1.3; }
+.pie-escuela { text-align: center; font-size: .75rem; color: var(--texto-tenue); margin-top: 1.25rem; }
+.contenedor-centrado { grid-template-rows: 1fr auto; }
+
+/* ---------- Detalles con los colores del logo ---------- */
+.marca { color: var(--primario); }
+.tarjeta--login { border-top: 3px solid var(--acento); }
+.kpi__valor { color: var(--primario); }
+.btn--secundario:hover { border-color: var(--primario-borde); color: var(--primario); }
+a.enlace:hover { color: var(--primario); }

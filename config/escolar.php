@@ -7,6 +7,15 @@
 */
 
 return [
+    // Datos del plantel, tal como salen en la boleta oficial
+    'escuela' => [
+        'nombre' => 'Lic. Antonio María de Rivera',
+        'turno' => 'Vespertino',
+        'clave' => '30EBH0389X',
+        'localidad' => 'Xalapa, Veracruz',
+        'direccion_general' => 'Dirección General de Bachillerato',
+    ],
+
     'dias' => [
         1 => 'Lunes',
         2 => 'Martes',
