@@ -7,8 +7,8 @@
     <title>@yield('titulo', 'Sistema web escolar') · Sistema escolar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=6">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="{{ asset('css/estilos.css') }}?v=7">
 </head>
 <body>
     <div class="distribucion">
