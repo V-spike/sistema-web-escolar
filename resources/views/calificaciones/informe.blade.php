@@ -21,6 +21,7 @@
                 <a href="{{ route('calificaciones.informe', [$grupo, 'parcial' => $p]) }}" @class(['activa' => $p === $parcial])>{{ $p }}P</a>
             @endforeach
         </div>
+        <a href="{{ route('calificaciones.informe', [$grupo, 'parcial' => $parcial, 'formato' => 'excel']) }}" class="btn btn--secundario btn--enlace">Descargar para Excel</a>
         <button type="button" class="btn btn--primario btn--enlace" onclick="window.print()">Imprimir / Guardar PDF</button>
     </div>
 </div>
