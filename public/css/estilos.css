@@ -453,3 +453,18 @@ a.bloque:hover { background: #E2E8F0; box-shadow: 0 2px 8px rgba(31, 57, 90, .12
 .calif--vacia { color: var(--texto-tenue); font-weight: 400; }
 .calif--final { font-weight: 600; color: var(--primario); }
 .tabla-calificaciones tfoot td { border-top: 2px solid var(--borde); font-weight: 600; background: var(--fondo); }
+
+/* ---------- Menú lateral más legible: secciones separadas e íconos ---------- */
+.distribucion { grid-template-columns: 236px 1fr; }
+.menu { gap: 0; }
+.menu__grupo { display: flex; flex-direction: column; gap: 1px; margin-top: .75rem; padding-top: .7rem; border-top: 1px solid var(--borde); }
+.menu__seccion { padding: 0 .65rem .45rem; font-size: .68rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--texto-suave); }
+.menu__opcion { display: flex; align-items: center; gap: .65rem; padding: .45rem .65rem; font-size: .9rem; color: var(--texto); border-radius: 8px; }
+.menu__opcion .icono { flex-shrink: 0; color: var(--texto-suave); }
+.menu__opcion:hover .icono { color: var(--primario); }
+.menu__opcion--activa { font-weight: 600; }
+.menu__opcion--activa .icono { color: var(--acento-oscuro); }
+@media (max-width: 820px) {
+    .menu__grupo { flex-direction: row; margin: 0; padding: 0; border: none; }
+    .menu__opcion .icono { display: none; }
+}
