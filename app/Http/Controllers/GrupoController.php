@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aula;
 use App\Models\Grupo;
 use App\Models\Semestre;
+use App\Horarios\Guardas;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -93,6 +94,10 @@ class GrupoController extends Controller
             'area'        => ['nullable', 'string', 'max:60'],
         ]);
 
+        if ($causa = Guardas::cambioGrupo($grupo, (int) $datos['grado'], (int) $datos['semestre_id'])) {
+            return back()->withInput()->withErrors(['grado' => $causa]);
+        }
+
         $grupo->update($datos);
 
         return redirect()->route('grupos.index')->with('estado', 'Grupo actualizado correctamente.');
@@ -100,6 +105,10 @@ class GrupoController extends Controller
 
     public function cambiarEstado(Grupo $grupo)
     {
+        if ($grupo->activo && $causa = Guardas::bajaGrupo($grupo)) {
+            return redirect()->route('grupos.index')->withErrors(['estado' => $causa]);
+        }
+
         $grupo->update(['activo' => ! $grupo->activo]);
 
         return redirect()->route('grupos.index')->with('estado', 'Estado del grupo actualizado.');

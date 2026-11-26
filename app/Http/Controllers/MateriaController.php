@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Materia;
+use App\Horarios\Guardas;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -51,6 +52,10 @@ class MateriaController extends Controller
             'tipo' => ['required', Rule::in(['normal', 'bloque_comun', 'tutoria'])],
         ]);
 
+        if ($causa = Guardas::cambioMateria($materia, (int) $datos['semestre'], $datos['tipo'], (int) $datos['horas_semana'])) {
+            return back()->withInput()->withErrors(['horas_semana' => $causa]);
+        }
+
         $materia->update($datos);
 
         return redirect()->route('materias.index')->with('estado', 'Materia actualizada');
@@ -58,6 +63,10 @@ class MateriaController extends Controller
 
     public function cambiarEstado(Materia $materia)
     {
+        if ($materia->activo && $causa = Guardas::bajaMateria($materia)) {
+            return redirect()->route('materias.index')->withErrors(['estado' => $causa]);
+        }
+
         $materia->activo = !$materia->activo;
         $materia->save();
 

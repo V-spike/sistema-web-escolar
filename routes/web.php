@@ -12,6 +12,10 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DisponibilidadController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\PanelController;
+use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AdministradorController;
 
 Route::redirect('/', '/login');
 
@@ -34,52 +38,70 @@ Route::middleware(['auth', 'sin-cache'])->group(function () {
 });
 
 
-//panel de usuarios
+// Inicio de cada rol
 Route::middleware(['auth', 'sin-cache'])->prefix('panel')->name('panel.')->group(function () {
-    Route::view('/superusuario', 'panel.superusuario')->name('superusuario')->middleware('rol:superusuario');
-    Route::view('/administrador', 'panel.administrador')->name('administrador')->middleware('rol:administrador');
-    Route::view('/docente', 'panel.docente')->name('docente')->middleware('rol:docente');
-    Route::view('/alumno', 'panel.alumno')->name('alumno')->middleware('rol:alumno');
+    Route::get('/superusuario', [PanelController::class, 'superusuario'])->name('superusuario')->middleware('rol:superusuario');
+    Route::get('/administrador', [PanelController::class, 'administrador'])->name('administrador')->middleware('rol:administrador');
+    Route::get('/docente', [PanelController::class, 'docente'])->name('docente')->middleware('rol:docente');
+    Route::get('/alumno', [PanelController::class, 'alumno'])->name('alumno')->middleware('rol:alumno');
 });
 
-// ---------- Sprint 3: solo el superusuario ----------
+// ---------- Solo el superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->group(function () {
-    // HU-03 · Axel: administradores
+    // HU-03: administradores
+    Route::resource('administradores', AdministradorController::class)
+        ->parameters(['administradores' => 'administrador'])->except(['show', 'destroy']);
+    Route::patch('administradores/{administrador}/estado', [AdministradorController::class, 'cambiarEstado'])->name('administradores.estado');
 });
 
-// ---------- Sprint 3: administrador y superusuario ----------
+// ---------- Administrador y superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
-    // HU-05 · Marcos: materias
+    // Horario: acomodar clases sin empalmes
+    Route::get('horarios', [HorarioController::class, 'index'])->name('horarios.index');
+    Route::post('horarios/revisar', [HorarioController::class, 'revisar'])->name('horarios.revisar');
+    Route::post('horarios', [HorarioController::class, 'store'])->name('horarios.store');
+    Route::get('horarios/{clase}/editar', [HorarioController::class, 'edit'])->name('horarios.edit');
+    Route::put('horarios/{clase}', [HorarioController::class, 'update'])->name('horarios.update');
+    Route::delete('horarios/{clase}', [HorarioController::class, 'destroy'])->name('horarios.destroy');
+
+    // HU-05: materias
     Route::resource('materias', MateriaController::class)->except(['show', 'destroy']);
     Route::patch('materias/{materia}/estado', [MateriaController::class, 'cambiarEstado'])->name('materias.estado');
 
-    // HU-06 · Marcos: aulas
+    // HU-06: aulas
     Route::resource('aulas', AulaController::class)->except(['show', 'destroy']);
     Route::patch('aulas/{aula}/estado', [AulaController::class, 'cambiarEstado'])->name('aulas.estado');
 
-    // HU-07 · Axel: semestres
+    // HU-07: semestres
     Route::resource('semestres', SemestreController::class)->except(['show', 'destroy']);
     Route::patch('semestres/{semestre}/activar', [SemestreController::class, 'activar'])->name('semestres.activar');
 
-    // HU-25 · Axel: bloques comunes
+    // HU-12: jornada y recesos
+    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
+    Route::put('jornada', [JornadaController::class, 'update'])->name('jornada.update');
+    Route::post('jornada/recesos', [JornadaController::class, 'storeReceso'])->name('jornada.recesos.store');
+    Route::delete('jornada/recesos/{receso}', [JornadaController::class, 'destroyReceso'])->name('jornada.recesos.destroy');
+
+    // HU-25: bloques comunes
     Route::get('bloques-comunes', [BloqueComunController::class, 'index'])->name('bloques-comunes.index');
     Route::post('bloques-comunes', [BloqueComunController::class, 'store'])->name('bloques-comunes.store');
     Route::delete('bloques-comunes/{bloque}', [BloqueComunController::class, 'destroy'])->name('bloques-comunes.destroy');
 
-    // HU-12 · Axel: jornada (solo se editan las horas)
-    Route::get('jornada', [JornadaController::class, 'index'])->name('jornada.index');
-    Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
-    Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
-
-    // HU-10 · Marcos: docentes
+    // HU-10: docentes
     Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
     Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
 
-    // HU-08 · Marcos: grupos
+    // HU-13: disponibilidad del docente (rangos de hora)
+    Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
+    Route::post('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'store'])->name('docentes.disponibilidad.guardar');
+    Route::post('docentes/{docente}/disponibilidad/completa', [DisponibilidadController::class, 'completa'])->name('docentes.disponibilidad.completa');
+    Route::delete('docentes/{docente}/disponibilidad/{rango}', [DisponibilidadController::class, 'destroy'])->name('docentes.disponibilidad.quitar');
+
+    // HU-08: grupos
     Route::resource('grupos', GrupoController::class)->except(['show', 'destroy']);
     Route::patch('grupos/{grupo}/estado', [GrupoController::class, 'cambiarEstado'])->name('grupos.estado');
 
-    // HU-13 · Axel: disponibilidad del docente
-    Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
-    Route::put('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'update'])->name('docentes.disponibilidad.guardar');
+    // Alumnos
+    Route::resource('alumnos', AlumnoController::class)->except(['show', 'destroy']);
+    Route::patch('alumnos/{alumno}/estado', [AlumnoController::class, 'cambiarEstado'])->name('alumnos.estado');
 });

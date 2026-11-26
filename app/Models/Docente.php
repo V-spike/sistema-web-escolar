@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -42,5 +43,21 @@ class Docente extends Model
     public function usuario(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function disponibilidades(): HasMany
+    {
+        return $this->hasMany(Disponibilidad::class);
+    }
+
+    public function clases(): HasMany
+    {
+        return $this->hasMany(Clase::class);
+    }
+
+    /** "Acosta Rebolledo Isaí Rubén" */
+    public function getNombreCompletoAttribute(): string
+    {
+        return trim("{$this->apellido_paterno} {$this->apellido_materno} {$this->nombre}");
     }
 }

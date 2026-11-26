@@ -1,73 +1,81 @@
 @extends('layouts.app')
 
-@php
-    // Mientras se confirman los nombres de la tabla docentes (T-44 de Marcos)
-    $nombreDocente = $docente->nombre ?? $docente->user?->name ?? 'docente';
-    $horasPlaza = $docente->horas_plaza ?? null;
-@endphp
-
-@section('titulo', 'Disponibilidad de ' . $nombreDocente)
+@section('titulo', 'Disponibilidad')
 
 @section('menu')
     @include('panel.menu')
 @endsection
 
 @section('contenido')
-<h1>Disponibilidad de {{ $nombreDocente }}</h1>
-
-<p>
-    Marca los espacios en los que el docente puede dar clase.
-    @if ($horasPlaza)
-        Sus horas de plaza son <strong>{{ $horasPlaza }}</strong> a la semana.
-    @endif
-</p>
-
-@error('espacios.*') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
-
-<form method="POST" action="{{ route('docentes.disponibilidad.guardar', $docente) }}">
-    @csrf
-    @method('PUT')
-
-    @include('componentes.cuadricula', [
-        'franjas' => $franjas,
-        'celda'   => 'docentes._celda-disponibilidad',
-        'datos'   => ['marcadas' => $marcadas],
-    ])
-
-    <p class="disponibilidad__contador" aria-live="polite">
-        Marcados: <strong id="total-marcados">0</strong> espacios
-    </p>
-
-    <div class="formulario__acciones">
-        <button type="submit" class="btn btn--primario">Guardar</button>
-        <a href="{{ \Illuminate\Support\Facades\Route::has('docentes.index') ? route('docentes.index') : url()->previous() }}"
-           class="btn btn--secundario btn--enlace">Regresar</a>
+@php $dias = config('escolar.dias'); @endphp
+<div class="barra-catalogo">
+    <div>
+        <h1>Disponibilidad de {{ $docente->nombre }}</h1>
+        <p class="tenue" style="margin:0">{{ $docente->nombre_completo }} · plaza de {{ $docente->horas_plaza }} h</p>
     </div>
-</form>
+    <a href="{{ route('docentes.index') }}" class="btn btn--secundario btn--chico btn--enlace">Volver a docentes</a>
+</div>
 
-<style>
-    /* La casilla ocupa toda la celda para que sea fácil de presionar */
-    .disponibilidad__casilla { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 36px; cursor: pointer; }
-    .disponibilidad__casilla input { width: 1.1rem; height: 1.1rem; cursor: pointer; }
-    /* :has() pinta la celda cuando su casilla está marcada, sin JavaScript.
-       Mismo color que .cuadricula__celda--marcada de la guía de estilo. */
-    .cuadricula__celda:has(input:checked) { background: var(--color-primario-claro); }
-    .disponibilidad__contador { margin: 1rem 0 0; }
-</style>
+<div class="rejilla-2">
+    <div class="panel">
+        <h2>Semana</h2>
+        <p class="tenue">En verde, cuándo puede dar clase. Encima, las clases que ya tiene.</p>
+        @include('componentes.semana', ['semana' => $semana, 'chica' => true])
+    </div>
 
-<script>
-    // Cuenta las casillas marcadas y actualiza el texto "Marcados: N espacios"
-    const casillas = document.querySelectorAll('input[name="espacios[]"]');
-    const total = document.getElementById('total-marcados');
+    <div>
+        <div class="panel">
+            <h2>Agregar horario disponible</h2>
+            <form method="POST" action="{{ route('docentes.disponibilidad.guardar', $docente) }}">
+                @csrf
+                <span class="campo__etiqueta">Días</span>
+                <div class="dias-elegir">
+                    @foreach ($dias as $numero => $nombre)
+                        <label><input type="checkbox" name="dias[]" value="{{ $numero }}" @checked(in_array($numero, old('dias', [])))> {{ $nombre }}</label>
+                    @endforeach
+                </div>
+                @error('dias') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+                <div class="formulario__fila">
+                    <div>
+                        <label for="hora_inicio" class="campo__etiqueta">Desde</label>
+                        <input id="hora_inicio" name="hora_inicio" type="time" class="campo" value="{{ old('hora_inicio', $jornada->hora_entrada_corta) }}" required>
+                    </div>
+                    <div>
+                        <label for="hora_fin" class="campo__etiqueta">Hasta</label>
+                        <input id="hora_fin" name="hora_fin" type="time" class="campo" value="{{ old('hora_fin', $jornada->hora_salida_corta) }}" required>
+                    </div>
+                </div>
+                @error('hora_inicio') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+                @error('hora_fin') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+                <span class="campo__ayuda">Si se encima con un rango que ya tiene, se juntan en uno.</span>
+                <div class="formulario__acciones">
+                    <button type="submit" class="btn btn--primario">Agregar</button>
+                </div>
+            </form>
+            <form method="POST" action="{{ route('docentes.disponibilidad.completa', $docente) }}" style="margin-top:.75rem"
+                  onsubmit="return confirm('Esto reemplaza su disponibilidad por toda la jornada, de lunes a viernes. ¿Continuar?')">
+                @csrf
+                <button type="submit" class="btn btn--secundario btn--chico">Disponible toda la jornada</button>
+            </form>
+        </div>
 
-    function contar() {
-        total.textContent = [...casillas].filter(c => c.checked).length;
-    }
-
-    // Cada vez que se marca o desmarca una casilla
-    casillas.forEach(c => c.addEventListener('change', contar));
-
-    // Una vez al cargar, para contar las que ya venían marcadas de la base de datos
-    contar();
-</script>
+        <div class="panel">
+            <h2>Rangos guardados</h2>
+            <ul class="lista-simple">
+                @forelse ($rangos as $rango)
+                    <li>
+                        <span>{{ $dias[$rango->dia] }} · {{ $rango->rango }}</span>
+                        <form method="POST" action="{{ route('docentes.disponibilidad.quitar', [$docente, $rango]) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn--fantasma btn--chico">Quitar</button>
+                        </form>
+                    </li>
+                @empty
+                    <li>Sin disponibilidad capturada. Mientras tanto, el horario solo muestra un aviso.</li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+</div>
 @endsection

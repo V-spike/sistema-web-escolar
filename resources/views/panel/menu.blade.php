@@ -1,48 +1,49 @@
-{{-- Menú compartido de los paneles, catálogos y "Cambiar contraseña".
-     Muestra las opciones según el rol y resalta la sección en la que está el usuario. --}}
+{{-- Menú lateral: las opciones dependen del rol y se resalta la sección actual. --}}
 @php
     $rol = auth()->user()->rol;
 
     // [texto, nombre de ruta, patrón para resaltar]
-    $catalogos = [
-        ['Materias', 'materias.index', 'materias.*'],
-        ['Aulas', 'aulas.index', 'aulas.*'],
-        ['Semestres', 'semestres.index', 'semestres.*'],
-        ['Jornada', 'jornada.index', 'jornada.*'],
-        ['Bloques comunes', 'bloques-comunes.index', 'bloques-comunes.*'],
-        ['Docentes', 'docentes.index', 'docentes.*'],
-        ['Grupos', 'grupos.index', 'grupos.*'],
+    $gestion = [
+        'Horario' => [
+            ['Acomodar horario', 'horarios.index', 'horarios.*'],
+        ],
+        'Escuela' => [
+            ['Semestres', 'semestres.index', 'semestres.*'],
+            ['Jornada y recesos', 'jornada.index', 'jornada.*'],
+            ['Materias', 'materias.index', 'materias.*'],
+            ['Aulas', 'aulas.index', 'aulas.*'],
+            ['Bloques comunes', 'bloques-comunes.index', 'bloques-comunes.*'],
+        ],
+        'Personas' => [
+            ['Docentes', 'docentes.index', 'docentes.*'],
+            ['Grupos', 'grupos.index', 'grupos.*'],
+            ['Alumnos', 'alumnos.index', 'alumnos.*'],
+        ],
     ];
 
-    $listas = [
-        'superusuario'  => array_merge([['Administradores', 'administradores.index', 'administradores.*']], $catalogos),
-        'administrador' => $catalogos, // el administrador no ve "Administradores" (HU-03, criterio 4)
-    ][$rol] ?? [];
+    $secciones = match ($rol) {
+        'superusuario' => array_merge_recursive($gestion, ['Personas' => [['Administradores', 'administradores.index', 'administradores.*']]]),
+        'administrador' => $gestion,
+        default => [],
+    };
 
-    $pendientes = [
-        'superusuario'  => ['Alumnos'],
-        'administrador' => ['Alumnos'],
-        'docente'       => ['Mi horario', 'Calificaciones'],
-        'alumno'        => ['Mi horario', 'Mis calificaciones'],
-    ][$rol] ?? [];
+    $inicio = match ($rol) {
+        'docente', 'alumno' => 'Mi horario',
+        default => 'Inicio',
+    };
 @endphp
 
 <a href="{{ route('panel.' . $rol) }}"
-   @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('panel.*')])>Inicio</a>
+   @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('panel.*')])>{{ $inicio }}</a>
 
-@foreach ($listas as [$texto, $ruta, $patron])
-    {{-- Si la ruta todavía no está en main, la opción se ve en gris en lugar de romper la página --}}
-    @if (\Illuminate\Support\Facades\Route::has($ruta))
+@foreach ($secciones as $titulo => $opciones)
+    <span class="menu__seccion">{{ $titulo }}</span>
+    @foreach ($opciones as [$texto, $ruta, $patron])
         <a href="{{ route($ruta) }}"
            @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs($patron)])>{{ $texto }}</a>
-    @else
-        <span class="menu__opcion menu__opcion--pendiente">{{ $texto }}</span>
-    @endif
+    @endforeach
 @endforeach
 
-@foreach ($pendientes as $opcion)
-    <span class="menu__opcion menu__opcion--pendiente">{{ $opcion }}</span>
-@endforeach
-
+<span class="menu__seccion">Cuenta</span>
 <a href="{{ route('contrasena.editar') }}"
    @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('contrasena.editar')])>Cambiar contraseña</a>

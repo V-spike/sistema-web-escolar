@@ -47,7 +47,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="5">Todavía no hay materias. Registra la primera con “Nueva materia”.</td></tr>
+            <tr><td colspan="8">Todavía no hay materias. Registra la primera con “Nueva materia”.</td></tr>
         @endforelse
         </tbody>
     </table>
