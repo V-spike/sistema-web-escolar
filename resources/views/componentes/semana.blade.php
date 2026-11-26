@@ -1,12 +1,13 @@
 {{--
-    Semana de lunes a viernes con cada bloque puesto según su hora real.
+    Semana de lunes a viernes con cada clase puesta según su hora real.
     Recibe: $semana (App\Horarios\Semana) y opcional $enlazar (true = cada clase abre su edición).
+    Cada cuadro muestra: la materia, quién la da (o el grupo) y abajo la hora y el aula.
 --}}
 @php
     $enlazar = $enlazar ?? false;
     $chica = $chica ?? false;
 @endphp
-<div @class(['semana', 'semana--chica' => $chica]) style="--alto: {{ $chica ? (int) ($semana->altoPx() * .75) : $semana->altoPx() }}px; --paso: {{ round(30 * 100 / max(1, $semana->salida - $semana->entrada), 3) }}%">
+<div @class(['semana', 'semana--chica' => $chica]) style="--alto: {{ $chica ? (int) ($semana->altoPx() * .75) : $semana->altoPx() }}px; --paso: {{ round(60 * 100 / max(1, $semana->salida - $semana->entrada), 3) }}%">
     <div class="semana__cabeza"></div>
     @foreach ($semana->dias as $nombre)
         <div class="semana__cabeza">{{ $nombre }}</div>
@@ -28,27 +29,23 @@
                 @php
                     $clases = ['bloque', 'bloque--' . $b['tipo'], 'bloque--c' . $b['color'] => $b['tipo'] === 'clase'];
                     $estilo = "top: {$b['arriba']}%; height: {$b['alto']}%";
-                    $titulo = $b['nombre'] . ' · ' . $nombre . ' ' . $b['rango'] . ($b['lineas'] ? ' · ' . implode(' · ', $b['lineas']) : '');
+                    $titulo = $b['nombre'] . ' · ' . $nombre . ' ' . $b['rango'] . ($b['lineas'] ? ' · ' . implode(' · ', array_filter($b['lineas'])) : '');
+                    $quien = $b['lineas'][0] ?? '';
+                    $abajo = trim($b['rango'] . (! empty($b['lineas'][1]) ? ' · ' . $b['lineas'][1] : ''));
+                    $etiqueta = ($enlazar && $b['id'] && in_array($b['tipo'], ['clase', 'problema'])) ? 'a' : 'div';
                 @endphp
-                @if ($enlazar && $b['id'] && in_array($b['tipo'], ['clase', 'problema']))
-                    <a href="{{ route('horarios.edit', $b['id']) }}" @class($clases) style="{{ $estilo }}" title="{{ $titulo }}">
-                        <b>{{ $b['titulo'] }}</b>
-                        <span>{{ $b['rango'] }}</span>
-                        @foreach ($b['lineas'] as $linea) <span>{{ $linea }}</span> @endforeach
-                    </a>
-                @else
-                    <div @class($clases) style="{{ $estilo }}" title="{{ $titulo }}">
-                        <b>{{ $b['titulo'] }}</b>
-                        <span>{{ $b['rango'] }}</span>
-                        @foreach ($b['lineas'] as $linea) <span>{{ $linea }}</span> @endforeach
-                    </div>
-                @endif
+                <{{ $etiqueta }} @if ($etiqueta === 'a') href="{{ route('horarios.edit', $b['id']) }}" @endif
+                    @class($clases) style="{{ $estilo }}" title="{{ $titulo }}">
+                    <b class="bloque__materia">{{ $b['titulo'] }}</b>
+                    @if ($quien) <span class="bloque__quien">{{ $quien }}</span> @endif
+                    <span class="bloque__hora">{{ $abajo }}</span>
+                </{{ $etiqueta }}>
             @endforeach
         </div>
     @endforeach
 </div>
 <div class="leyenda">
-    <span><i style="background:#EEF2FF;border-color:#6366F1"></i>Clase</span>
-    <span><i style="background:#E2E8F0"></i>Receso</span>
-    <span><i style="background:#FEE2E2;border-color:#B91C1C"></i>Con empalme</span>
+    <span><i class="leyenda__clase"></i>Clase (el color depende de la materia)</span>
+    <span><i class="leyenda__receso"></i>Receso</span>
+    <span><i class="leyenda__problema"></i>Con empalme</span>
 </div>

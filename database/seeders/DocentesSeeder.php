@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Docente;
 use App\Models\Materia;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
@@ -41,5 +42,12 @@ class DocentesSeeder extends Seeder
         }
 
         fclose($archivo);
+
+        // La cuenta de prueba docente@escolar.test es la de D-001 (para ver "Mi horario" y "Calificaciones")
+        $cuenta = User::where('email', 'docente@escolar.test')->first();
+        if ($cuenta) {
+            Docente::where('user_id', $cuenta->id)->update(['user_id' => null]);
+            Docente::where('numero_personal', 'D-001')->update(['user_id' => $cuenta->id]);
+        }
     }
 }

@@ -131,14 +131,40 @@ class CalificacionTest extends TestCase
                 'materia_id' => $this->pm->id, 'parcial' => $parcial, 'valor' => $valor]);
         }
 
-        // (8 + 9 + 5) / 3 = 7.3 → "SIETE PUNTO TRES"
-        $this->actingAs($alumno)->get('/panel/mi-boleta')->assertOk()
+        // (8 + 9 + 5) / 3 = 7.3 → "SIETE PUNTO TRES" en la boleta que imprime la escuela
+        $this->actingAs($this->admin())->get("/panel/boletas/alumno/{$alumno->id}")->assertOk()
             ->assertSee('Boleta interna y provisional de calificaciones')
             ->assertSee('PRUE100101HVZRBLA0')
             ->assertSee('PENSAMIENTO MATEMÁTICO I')
             ->assertSee('SIETE PUNTO TRES')
             ->assertSee('3P')
             ->assertSee('30EBH0389X');
+    }
+
+    public function test_el_alumno_ve_sus_calificaciones_por_materia_sin_la_boleta(): void
+    {
+        $alumno = User::where('email', 'alumno@escolar.test')->first();
+        $semestre = Semestre::activo();
+        foreach ([1 => '8', 2 => '9.5'] as $parcial => $valor) {
+            Calificacion::create(['semestre_id' => $semestre->id, 'alumno_id' => $alumno->id,
+                'materia_id' => $this->pm->id, 'parcial' => $parcial, 'valor' => $valor]);
+        }
+
+        $this->actingAs($alumno)->get('/panel/mis-calificaciones')->assertOk()
+            ->assertSee('Mis calificaciones')->assertSee('Pensamiento Matemático I')->assertSee('9.5')
+            ->assertDontSee('Boleta interna y provisional de calificaciones');
+
+        // La boleta para imprimir no es para el alumno
+        $this->get("/panel/boletas/alumno/{$alumno->id}")->assertForbidden();
+    }
+
+    public function test_el_docente_imprime_las_boletas_solo_de_sus_grupos(): void
+    {
+        $docente = $this->docenteConClase();
+
+        $this->actingAs($docente)->get("/panel/boletas/grupo/{$this->grupoA->id}")->assertOk()
+            ->assertSee('Boleta interna y provisional de calificaciones');
+        $this->get('/panel/boletas/grupo/' . Grupo::where('letra', 'B')->first()->id)->assertForbidden();
     }
 
     public function test_informe_y_boletas_del_grupo_son_solo_de_la_administracion(): void

@@ -380,3 +380,76 @@ th.formato__titulo { font-size: .8rem; }
     .boleta:last-child { break-after: auto; }
     .formato th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* =========================================================
+   Horario más legible (sobrescribe lo de la sección 10)
+   ========================================================= */
+.rejilla-2 { grid-template-columns: minmax(0, 1fr) 320px; }
+
+/* Cuadrícula: líneas solo cada hora y cuadros más altos (ver Semana::altoPx) */
+.semana { grid-template-columns: 52px repeat(5, minmax(120px, 1fr)); }
+.semana__cabeza { padding: .7rem .5rem; font-size: .82rem; font-weight: 600; color: var(--primario); background: var(--fondo); }
+.semana__marca { font-size: .7rem; }
+.semana__dia { background-image: linear-gradient(to bottom, var(--borde) 1px, transparent 1px); }
+.semana__receso { background: repeating-linear-gradient(135deg, var(--fondo), var(--fondo) 6px, var(--gris-claro) 6px, var(--gris-claro) 12px); font-size: .68rem; letter-spacing: .02em; }
+
+/* Cada clase: fondo suave del color de la materia, tres renglones */
+.bloque { left: 4px; right: 4px; padding: .35rem .5rem; border-radius: 6px; border: none; border-left: 4px solid #64748B; background: #F1F5F9; display: flex; flex-direction: column; gap: 1px; }
+a.bloque:hover { background: #E2E8F0; box-shadow: 0 2px 8px rgba(31, 57, 90, .12); }
+.bloque__materia { font-size: .8rem; font-weight: 600; color: var(--texto); }
+.bloque__quien { font-size: .74rem; color: var(--texto); }
+.bloque__hora { font-size: .68rem; color: var(--texto-suave); margin-top: auto; }
+.bloque span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bloque--c0 { border-left-color: #1F395A; background: #EDF1F6; }
+.bloque--c1 { border-left-color: #62B22D; background: #EFF7E9; }
+.bloque--c2 { border-left-color: #0369A1; background: #E8F3FA; }
+.bloque--c3 { border-left-color: #B45309; background: #FBF1E6; }
+.bloque--c4 { border-left-color: #7C3AED; background: #F3EEFD; }
+.bloque--c5 { border-left-color: #0F766E; background: #E7F4F2; }
+.bloque--c6 { border-left-color: #A16207; background: #FAF5E4; }
+.bloque--c7 { border-left-color: #BE123C; background: #FBEBEF; }
+.bloque--problema { background: var(--error-suave); border-left-color: var(--error); outline: 1px solid #FECACA; }
+.bloque--disponible { border: 1px dashed #86EFAC; border-left: 1px dashed #86EFAC; }
+
+.leyenda i { width: 12px; height: 12px; border: none; border-radius: 3px; }
+.leyenda__clase { background: #EDF1F6; box-shadow: inset 3px 0 0 #1F395A; }
+.leyenda__receso { background: var(--gris-claro); }
+.leyenda__problema { background: var(--error-suave); box-shadow: inset 3px 0 0 var(--error); }
+
+/* Panel derecho: formulario en 3 pasos */
+.lado-horario { position: sticky; top: 4.5rem; display: grid; gap: 1.25rem; }
+.lado-horario .panel + .panel { margin-top: 0; }
+.lado-horario__titulo { font-size: .95rem; margin-bottom: .25rem; }
+.pasos { display: grid; gap: .25rem; }
+.paso { border: none; padding: .9rem 0 0; margin: 0; }
+.paso + .paso { border-top: 1px solid var(--borde); margin-top: .6rem; }
+.paso__titulo { display: flex; align-items: center; gap: .5rem; font-weight: 600; font-size: .85rem; color: var(--primario); padding: 0; margin-bottom: .4rem; float: left; width: 100%; }
+.paso__numero { width: 20px; height: 20px; border-radius: 50%; background: var(--primario); color: #fff; display: grid; place-items: center; font-size: .7rem; }
+.paso .campo__etiqueta { margin-top: .7rem; }
+.paso .paso__titulo + .campo__etiqueta { margin-top: 0; }
+
+/* Días como botones: L M Mi J V */
+.dias-botones { display: grid; grid-template-columns: repeat(5, 1fr); gap: .3rem; clear: both; }
+.dias-botones__opcion { position: relative; }
+.dias-botones__opcion input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.dias-botones__opcion span { display: block; text-align: center; padding: .45rem 0; border: 1px solid var(--borde-fuerte); border-radius: var(--radio-chico); font-size: .82rem; font-weight: 500; color: var(--texto-suave); }
+.dias-botones__opcion input:checked + span { background: var(--primario); border-color: var(--primario); color: #fff; }
+.dias-botones__opcion input:focus-visible + span { outline: 2px solid var(--primario); outline-offset: 2px; }
+
+/* Horas del grupo: clave, barra y cuánto falta en un renglón */
+.carga { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.carga .carga__fila { display: grid; grid-template-columns: 4.5rem 1fr 5.5rem; align-items: center; gap: .6rem; font-size: .82rem; }
+.carga__materia { font-weight: 600; color: var(--texto); }
+.carga__horas { text-align: right; color: var(--texto-suave); font-size: .76rem; }
+.carga__completa .carga__horas { color: var(--exito); }
+.carga__fila .barra-progreso { grid-column: auto; height: 6px; }
+
+@media (max-width: 1100px) { .lado-horario { position: static; } }
+
+/* ---------- Mis calificaciones (alumno) ---------- */
+.tabla-calificaciones th:not(:first-child), .tabla-calificaciones td.calif { text-align: center; width: 7rem; }
+.calif { font-variant-numeric: tabular-nums; font-weight: 500; }
+.calif--baja { color: var(--error); }
+.calif--vacia { color: var(--texto-tenue); font-weight: 400; }
+.calif--final { font-weight: 600; color: var(--primario); }
+.tabla-calificaciones tfoot td { border-top: 2px solid var(--borde); font-weight: 600; background: var(--fondo); }

@@ -26,8 +26,8 @@
     $secciones = match ($rol) {
         'superusuario' => array_merge_recursive($gestion, ['Personas' => [['Administradores', 'administradores.index', 'administradores.*']]]),
         'administrador' => $gestion,
-        'docente' => ['Escuela' => [['Calificaciones', 'calificaciones.index', 'calificaciones.*']]],
-        'alumno' => ['Escuela' => [['Mi boleta', 'boletas.mia', 'boletas.*']]],
+        'docente' => ['Escuela' => [['Calificaciones y boletas', 'calificaciones.index', ['calificaciones.*', 'boletas.*']]]],
+        'alumno' => ['Escuela' => [['Mis calificaciones', 'calificaciones.mias', 'calificaciones.mias']]],
         default => [],
     };
 

@@ -32,14 +32,14 @@
     <div class="panel">
         <div class="panel__titulo">
             <h2>{{ $grupo->nombre }} <span class="tenue" style="font-weight:400">· {{ $asignaciones->first()['alumnos'] }} alumnos</span></h2>
-            @if ($esAdmin)
-                <div class="barra-catalogo__acciones">
+            <div class="barra-catalogo__acciones">
+                @if ($esAdmin)
                     @foreach ($parciales as $p)
                         <a href="{{ route('calificaciones.informe', [$grupo, 'parcial' => $p]) }}" class="btn btn--secundario btn--chico btn--enlace">Informe {{ $p }}P</a>
                     @endforeach
-                    <a href="{{ route('boletas.grupo', $grupo) }}" class="btn btn--primario btn--chico btn--enlace">Boletas del grupo</a>
-                </div>
-            @endif
+                @endif
+                <a href="{{ route('boletas.grupo', $grupo) }}" class="btn btn--primario btn--chico btn--enlace">Boletas para imprimir</a>
+            </div>
         </div>
 
         <div class="tabla-contenedor">

@@ -46,11 +46,11 @@ class Semana
     public function conClases(Collection $clases, string $mostrar = 'grupo', array $conProblema = []): self
     {
         foreach ($clases as $clase) {
+            // Dentro del cuadro: [quién, dónde]. En la vista de un docente "quién" es el grupo.
             $lineas = match ($mostrar) {
                 'docente' => [$clase->grupo->nombre, $clase->aula?->clave ?? 'Sin aula'],
-                'aula' => [$clase->grupo->nombre, $clase->docente->nombre_completo],
-                'alumno' => [$clase->docente->nombre_completo, $clase->aula?->clave ?? 'Sin aula'],
-                default => [$clase->docente->nombre_completo, $clase->aula?->clave ?? 'Sin aula'],
+                'aula' => [$clase->grupo->nombre, $this->nombreCorto($clase->docente)],
+                default => [$this->nombreCorto($clase->docente), $clase->aula?->clave ?? 'Sin aula'],
             };
 
             $this->agregar($clase->dia, $clase->inicio, $clase->fin, [
@@ -109,9 +109,15 @@ class Semana
         return round(($minuto - $this->entrada) * 100 / ($this->salida - $this->entrada), 3);
     }
 
-    /** Alto total en px: 1.4 px por minuto, para que una clase de 50 min se lea bien */
+    /** Alto total en px: 1.8 px por minuto, así una clase de 50 min mide 90 px y se lee bien */
     public function altoPx(): int
     {
-        return (int) (($this->salida - $this->entrada) * 1.4);
+        return (int) (($this->salida - $this->entrada) * 1.8);
+    }
+
+    /** "Isaí Acosta": primer nombre y primer apellido, para que quepa en el cuadro */
+    private function nombreCorto($docente): string
+    {
+        return strtok($docente->nombre, ' ') . ' ' . $docente->apellido_paterno;
     }
 }
