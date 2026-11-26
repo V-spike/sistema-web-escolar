@@ -8,7 +8,7 @@
 
 @section('contenido')
 @php
-    $tipos = ['normal' => 'Normal', 'bloque_comun' => 'Bloque común', 'tutoria' => 'Tutoría'];
+    $tipos = App\Models\Materia::TIPOS;
 @endphp
 <div class="barra-catalogo">
     <h1>Materias</h1>

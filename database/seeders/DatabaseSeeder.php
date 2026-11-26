@@ -19,10 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call(DocentesSeeder::class);
         $this->call(GruposSeeder::class);
         $this->call(DisponibilidadSeeder::class);
+        $this->call(AlumnosSeeder::class);        // alumnos inventados de 1.º A a 1.º F
 
         // El horario de ejemplo tarda unos segundos: en las pruebas automáticas no se carga
         if (! app()->runningUnitTests()) {
             $this->call(HorarioDemoSeeder::class);
+            $this->call(CalificacionesDemoSeeder::class);
         }
     }
 }

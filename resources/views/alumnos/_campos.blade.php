@@ -21,6 +21,11 @@
 @error('matricula') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
 @error('grupo_id') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
 
+<label for="curp" class="campo__etiqueta">CURP</label>
+<input id="curp" name="curp" type="text" minlength="18" maxlength="18" value="{{ old('curp', $alumno?->curp) }}" class="campo @error('curp') campo--error @enderror" style="text-transform: uppercase">
+<span class="campo__ayuda">Sale en la boleta. 18 caracteres.</span>
+@error('curp') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+
 <label for="email" class="campo__etiqueta">Correo electrónico</label>
 <input id="email" name="email" type="email" maxlength="255" value="{{ old('email', $alumno?->email) }}" class="campo @error('email') campo--error @enderror" required>
 @error('email') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror

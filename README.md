@@ -1,6 +1,6 @@
 # Sistema web escolar
 
-Sistema para armar el horario de una escuela sin empalmes. El administrador captura los catálogos (semestres, jornada, materias, aulas, docentes y grupos), acomoda las clases a mano y el sistema le avisa al momento si algo se encima. Docentes y alumnos entran a ver su horario.
+Sistema para armar el horario de una escuela sin empalmes. El administrador captura los catálogos (semestres, jornada, materias, aulas, docentes y grupos), acomoda las clases a mano y el sistema le avisa al momento si algo se encima. Docentes y alumnos entran a ver su horario; los docentes capturan calificaciones por parcial y los alumnos ven su boleta.
 
 Hecho con Laravel 13, PHP 8.3 o más nuevo y MySQL. Las vistas son Blade con una sola hoja de estilos (`public/css/estilos.css`), sin Vite ni frameworks de CSS.
 
@@ -21,6 +21,8 @@ php artisan serve
 
 Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 28 docentes, 7 grupos de primero y un horario ya acomodado.
 
+Los nombres que firman la boleta van en `.env` (`ESCUELA_DIRECTOR` y `ESCUELA_SUBDIRECTOR`).
+
 Para que funcione "¿Olvidaste tu contraseña?" llena los datos de correo (`MAIL_USERNAME`, `MAIL_PASSWORD` con una contraseña de aplicación de Gmail y `MAIL_FROM_ADDRESS`).
 
 ## Usuarios de prueba
@@ -30,9 +32,10 @@ Todos usan la contraseña `Escolar2026`.
 | Correo | Rol | Qué ve |
 |---|---|---|
 | superusuario@escolar.test | Superusuario | Todo, más el alta de administradores |
-| administrador@escolar.test | Administrador | Catálogos y horario |
-| docente@escolar.test | Docente | Su horario (ligado al docente D-001) |
-| alumno@escolar.test | Alumno | El horario de su grupo |
+| administrador@escolar.test | Administrador | Catálogos, horario, calificaciones y boletas |
+| docente@escolar.test | Docente | Su horario y la captura de calificaciones (ligado al docente D-001) |
+| alumno@escolar.test | Alumno | Su horario y su boleta (1.º A) |
+| alumno.a01@escolar.test … alumno.f15@escolar.test | Alumno | 15 alumnos inventados por grupo, con calificaciones de ejemplo |
 | baja@escolar.test | Alumno dado de baja | No puede entrar |
 
 ## Pruebas
@@ -55,6 +58,9 @@ app/
     Guardas.php           Impide bajas o cambios que dejarían clases sin sentido
     Semana.php            Arma la cuadrícula de la semana para las vistas
     Hora.php              Convierte "15:50" a minutos y de regreso
+  Calificaciones/     La boleta
+    Boleta.php            Arma la boleta de un alumno: parciales, promedios y calificación final
+    Letra.php             Escribe la calificación con letra (8.5 → OCHO PUNTO CINCO)
 config/escolar.php    Datos fijos (nombres de los días)
 database/
   migrations/         Estructura de las tablas
@@ -73,7 +79,8 @@ _to_delete/           Archivos que ya no se usan, con su registro
 ## Roles
 
 - **Superusuario**: todo lo del administrador y además da de alta administradores.
-- **Administrador**: catálogos, horario, docentes (con su cuenta para entrar), grupos y alumnos.
-- **Docente** y **alumno**: solo ven su horario y pueden cambiar su contraseña.
+- **Administrador**: catálogos, horario, docentes (con su cuenta para entrar), grupos, alumnos, calificaciones, informes por grupo y boletas.
+- **Docente**: ve su horario y captura las calificaciones por parcial de los grupos donde da clase.
+- **Alumno**: ve su horario y "Mi boleta", que se imprime o se guarda en PDF con el formato de la escuela.
 
 Nada se borra de los catálogos: se da de baja y se puede reactivar. El sistema no deja dar de baja algo que todavía tiene clases en el horario.

@@ -17,6 +17,8 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\AdministradorController;
+use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\BoletaController;
 
 Route::redirect('/', '/login');
 
@@ -56,8 +58,25 @@ Route::middleware(['auth', 'sin-cache', 'rol:superusuario'])->prefix('panel')->g
     Route::patch('administradores/{administrador}/estado', [AdministradorController::class, 'cambiarEstado'])->name('administradores.estado');
 });
 
+// ---------- Calificaciones: docentes (sus grupos) y administración (todos) ----------
+Route::middleware(['auth', 'sin-cache', 'rol:docente,administrador,superusuario'])->prefix('panel')->group(function () {
+    Route::get('calificaciones', [CalificacionController::class, 'index'])->name('calificaciones.index');
+    Route::get('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'capturar'])->name('calificaciones.capturar');
+    Route::put('calificaciones/{grupo}/{materia}', [CalificacionController::class, 'guardar'])->name('calificaciones.guardar');
+});
+
+// ---------- Boleta del alumno ----------
+Route::middleware(['auth', 'sin-cache', 'rol:alumno'])->prefix('panel')->group(function () {
+    Route::get('mi-boleta', [BoletaController::class, 'mia'])->name('boletas.mia');
+});
+
 // ---------- Administrador y superusuario ----------
 Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->prefix('panel')->group(function () {
+    // Informe de calificaciones y boletas
+    Route::get('informes/{grupo}', [CalificacionController::class, 'informe'])->name('calificaciones.informe');
+    Route::get('boletas/grupo/{grupo}', [BoletaController::class, 'grupo'])->name('boletas.grupo');
+    Route::get('boletas/alumno/{alumno}', [BoletaController::class, 'alumno'])->name('boletas.alumno');
+
     // Horario: acomodar clases sin empalmes
     Route::get('horarios', [HorarioController::class, 'index'])->name('horarios.index');
     Route::post('horarios/revisar', [HorarioController::class, 'revisar'])->name('horarios.revisar');

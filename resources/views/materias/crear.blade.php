@@ -45,7 +45,7 @@
     <label for="tipo" class="campo__etiqueta">Tipo</label>
     <select id="tipo" name="tipo"
             class="campo @error('tipo') campo--error @enderror" required>
-        @foreach (['normal' => 'Normal', 'bloque_comun' => 'Bloque común', 'tutoria' => 'Tutoría'] as $valor => $texto)
+        @foreach (App\Models\Materia::TIPOS as $valor => $texto)
             <option value="{{ $valor }}" @selected(old('tipo', $materia->tipo ?? 'normal') === $valor)>{{ $texto }}</option>
         @endforeach
     </select>

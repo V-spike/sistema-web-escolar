@@ -28,7 +28,7 @@ class MateriaController extends Controller
             'horas_semana' => ['required', 'integer', 'between:1,48'],
             'clave_corta' => ['required', 'string', 'max:10'],
             'semestre' => ['required', 'integer', 'between:1,6'],
-            'tipo' => ['required', Rule::in(['normal', 'bloque_comun', 'tutoria'])],
+            'tipo' => ['required', Rule::in(array_keys(Materia::TIPOS))],
         ]);
 
         Materia::create($datos);
@@ -49,7 +49,7 @@ class MateriaController extends Controller
             'horas_semana' => ['required', 'integer', 'between:1,48'],
             'clave_corta' => ['required', 'string', 'max:10'],
             'semestre' => ['required', 'integer', 'between:1,6'],
-            'tipo' => ['required', Rule::in(['normal', 'bloque_comun', 'tutoria'])],
+            'tipo' => ['required', Rule::in(array_keys(Materia::TIPOS))],
         ]);
 
         if ($causa = Guardas::cambioMateria($materia, (int) $datos['semestre'], $datos['tipo'], (int) $datos['horas_semana'])) {
