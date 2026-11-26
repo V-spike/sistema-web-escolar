@@ -73,7 +73,7 @@ class GrupoTest extends TestCase
 
     public function test_dar_de_baja_y_reactivar(): void
     {
-        $grupo = Grupo::first();
+        $grupo = Grupo::where('letra', 'G')->first();   // 1.º G no tiene alumnos ni clases
 
         $this->actingAs($this->admin())->patch("/panel/grupos/{$grupo->id}/estado");
         $this->assertFalse($grupo->fresh()->activo);
