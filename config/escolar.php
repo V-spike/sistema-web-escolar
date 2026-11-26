@@ -13,8 +13,16 @@ return [
         'turno' => 'Vespertino',
         'clave' => '30EBH0389X',
         'localidad' => 'Xalapa, Veracruz',
+        'municipio' => 'Xalapa',
+        'modalidad' => 'Escolarizada',
         'direccion_general' => 'Dirección General de Bachillerato',
+        // Firmas de la boleta: se ponen en el archivo .env para no subir nombres al repositorio
+        'director' => env('ESCUELA_DIRECTOR', 'Director(a) del plantel'),
+        'subdirector' => env('ESCUELA_SUBDIRECTOR', 'Subdirector(a) del plantel'),
     ],
+
+    // Parciales del semestre (la boleta muestra I, II y III)
+    'parciales' => 3,
 
     'dias' => [
         1 => 'Lunes',

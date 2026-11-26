@@ -351,3 +351,35 @@ a.enlace:hover { color: var(--primario); }
 .filtros input[type="search"] { min-width: 240px; }
 .filtros__opcion { display: inline-flex; align-items: center; gap: .4rem; font-size: .825rem; color: var(--texto-suave); }
 .filtros__total { margin-left: auto; font-size: .825rem; }
+
+/* ---------- Calificaciones: captura ---------- */
+.campo--calificacion { width: 5.5rem; text-align: center; padding: .35rem .5rem; }
+.tabla-captura td { padding-top: .4rem; padding-bottom: .4rem; }
+
+/* ---------- Formato oficial: informe y boleta ---------- */
+/* Tablas con bordes finos y letra chica en mayúsculas, como el formato en Excel de la escuela */
+.hoja-oficial { background: #fff; border: 1px solid var(--borde); border-radius: var(--radio); padding: 1.5rem; margin-bottom: 1.5rem; }
+.formato { width: 100%; border-collapse: collapse; margin-bottom: .75rem; font-size: .72rem; text-transform: uppercase; }
+.formato th, .formato td { border: 1px solid #9CA3AF; padding: .3rem .4rem; text-align: center; vertical-align: middle; }
+.formato th { background: var(--primario-suave); color: var(--primario); font-weight: 600; }
+.formato__etiqueta { font-weight: 600; color: var(--texto-suave); background: #FAFAFA; }
+.formato__titulo { text-align: center; font-weight: 600; font-size: .85rem; letter-spacing: .02em; text-transform: uppercase; margin: .25rem 0 .75rem; color: var(--primario); }
+th.formato__titulo { font-size: .8rem; }
+.formato__dgb { width: 18%; font-size: .7rem; }
+.formato__nombre { text-align: left !important; }
+.formato__letra { font-size: .66rem; }
+.formato--datos td { font-variant-numeric: tabular-nums; }
+.formato--fecha { width: auto; margin: 0; }
+.boleta__pie { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; margin-top: 1.5rem; }
+.firmas { display: flex; gap: 2rem; flex: 1; margin-top: 2.5rem; }
+.firmas__una { flex: 1; text-align: center; border-top: 1px solid var(--texto); padding-top: .35rem; }
+.firmas__nombre { display: block; font-size: .72rem; font-weight: 600; }
+.firmas__cargo { display: block; font-size: .62rem; color: var(--texto-suave); text-transform: uppercase; }
+
+@media print {
+    @page { size: letter; margin: 1cm; }
+    .hoja-oficial { border: none; padding: 0; margin: 0; }
+    .boleta { break-after: page; }
+    .boleta:last-child { break-after: auto; }
+    .formato th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

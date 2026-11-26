@@ -35,6 +35,7 @@
                 <td><span @class(['etiqueta', 'etiqueta--activa' => $alumno->activo, 'etiqueta--baja' => ! $alumno->activo])>{{ $alumno->activo ? 'Activo' : 'Baja' }}</span></td>
                 <td class="tabla-catalogo__acciones">
                     <a href="{{ route('alumnos.edit', $alumno) }}" class="btn btn--secundario btn--chico btn--enlace">Editar</a>
+                    <a href="{{ route('boletas.alumno', $alumno) }}" class="btn btn--secundario btn--chico btn--enlace">Boleta</a>
                     <form method="POST" action="{{ route('alumnos.estado', $alumno) }}" onsubmit="return confirm('¿Seguro que quieres cambiar el estado de este alumno?')">
                         @csrf
                         @method('PATCH')

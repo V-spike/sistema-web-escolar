@@ -22,7 +22,7 @@ class CatalogosSeeder extends Seeder
             ['clave' => 'PFYH1',  'clave_corta' => 'PFyH1',  'nombre' => 'Pensamiento Filosófico y Humanidades I',            'semestre' => 1, 'horas_semana' => 4, 'tipo' => 'normal'],
             ['clave' => 'ING1',   'clave_corta' => 'ING1',   'nombre' => 'Inglés I',                                          'semestre' => 1, 'horas_semana' => 3, 'tipo' => 'normal'],
             ['clave' => 'LDI1',   'clave_corta' => 'L.DI',   'nombre' => 'Laboratorio de Investigación',                      'semestre' => 1, 'horas_semana' => 3, 'tipo' => 'normal'],
-            ['clave' => 'PYCC1',  'clave_corta' => 'PyCC',   'nombre' => 'Práctica y Colaboración Ciudadana',                 'semestre' => 1, 'horas_semana' => 2, 'tipo' => 'normal'],
+            ['clave' => 'PYCC1',  'clave_corta' => 'PyCC',   'nombre' => 'Práctica y Colaboración Ciudadana',                 'semestre' => 1, 'horas_semana' => 2, 'tipo' => 'extendido'],
             ['clave' => 'CA1',    'clave_corta' => 'C.A.',   'nombre' => 'Currículum Ampliado (clubes)',                      'semestre' => 1, 'horas_semana' => 2, 'tipo' => 'bloque_comun'],
             ['clave' => 'TUT1',   'clave_corta' => 'TUT',    'nombre' => 'Tutoría académica',                                 'semestre' => 1, 'horas_semana' => 5, 'tipo' => 'tutoria'],
         ];

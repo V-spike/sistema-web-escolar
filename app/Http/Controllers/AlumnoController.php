@@ -36,6 +36,8 @@ class AlumnoController extends Controller
 
     public function store(Request $request)
     {
+        $this->curpEnMayusculas($request);
+
         $datos = $request->validate($this->reglas() + [
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
@@ -55,6 +57,7 @@ class AlumnoController extends Controller
     public function update(Request $request, User $alumno)
     {
         abort_unless($alumno->rol === 'alumno', 404);
+        $this->curpEnMayusculas($request);
 
         $datos = $request->validate($this->reglas($alumno) + [
             'password' => ['nullable', 'confirmed', Password::min(8)],
@@ -79,6 +82,13 @@ class AlumnoController extends Controller
             ->with('estado', $alumno->activo ? 'Alumno reactivado' : 'Alumno dado de baja');
     }
 
+    /** "aoda110616..." → "AODA110616..."; vacía → null */
+    private function curpEnMayusculas(Request $request): void
+    {
+        $curp = strtoupper(trim((string) $request->input('curp')));
+        $request->merge(['curp' => $curp === '' ? null : $curp]);
+    }
+
     private function reglas(?User $alumno = null): array
     {
         return [
@@ -86,6 +96,8 @@ class AlumnoController extends Controller
             'matricula' => ['required', 'string', 'max:20', Rule::unique('users', 'matricula')->ignore($alumno?->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($alumno?->id)],
             'grupo_id' => ['required', Rule::exists('grupos', 'id')->where('activo', true)],
+            // CURP: 4 letras, 6 números (fecha), H/M, 5 letras y 2 caracteres
+            'curp' => ['nullable', 'regex:/^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/', Rule::unique('users', 'curp')->ignore($alumno?->id)],
         ];
     }
 

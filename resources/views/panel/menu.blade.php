@@ -7,6 +7,9 @@
         'Horario' => [
             ['Acomodar horario', 'horarios.index', 'horarios.*'],
         ],
+        'Calificaciones' => [
+            ['Calificaciones y boletas', 'calificaciones.index', ['calificaciones.*', 'boletas.*']],
+        ],
         'Escuela' => [
             ['Semestres', 'semestres.index', 'semestres.*'],
             ['Jornada y recesos', 'jornada.index', 'jornada.*'],
@@ -24,6 +27,8 @@
     $secciones = match ($rol) {
         'superusuario' => array_merge_recursive($gestion, ['Personas' => [['Administradores', 'administradores.index', 'administradores.*']]]),
         'administrador' => $gestion,
+        'docente' => ['Escuela' => [['Calificaciones', 'calificaciones.index', 'calificaciones.*']]],
+        'alumno' => ['Escuela' => [['Mi boleta', 'boletas.mia', 'boletas.*']]],
         default => [],
     };
 
