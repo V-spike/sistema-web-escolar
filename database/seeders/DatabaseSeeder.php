@@ -20,9 +20,10 @@ class DatabaseSeeder extends Seeder
         $this->call(DisponibilidadSeeder::class);
         $this->call(AlumnosSeeder::class);        // alumnos inventados de 1.º A a 1.º F
 
-        // El horario NO se llena: se acomoda a mano en "Acomodar horario".
-        // Las calificaciones de ejemplo tardan unos segundos: en las pruebas automáticas no se cargan
+        // 1.º se acomoda a mano; 3.º y 5.º traen horario de ejemplo (tarda cerca de un minuto).
+        // Ni el horario ni las calificaciones de ejemplo se cargan en las pruebas automáticas.
         if (! app()->runningUnitTests()) {
+            $this->call(HorarioTerceroQuintoSeeder::class);
             $this->call(CalificacionesDemoSeeder::class);
         }
     }

@@ -19,7 +19,7 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
-Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 92 docentes, materias de 1.º, 3.º y 5.º (las de 3.º y 5.º son de ejemplo), 13 grupos (1.º A–G, 3.º A–C y 5.º A–C) con 15 alumnos inventados cada uno (menos 1.º G) y calificaciones de ejemplo. El horario queda vacío para acomodarlo a mano.
+Abre http://127.0.0.1:8000. El seeder deja datos de ejemplo: un semestre activo, la jornada con recesos, materias, aulas, 92 docentes, materias de 1.º, 3.º y 5.º (las de 3.º y 5.º son de ejemplo), 13 grupos (1.º A–G, 3.º A–C y 5.º A–C) con 15 alumnos inventados cada uno (menos 1.º G) y calificaciones de ejemplo. 3.º y 5.º traen su horario armado (sin empalmes); 1.º queda vacío para acomodarlo a mano. El seeder tarda cerca de un minuto por el horario.
 
 Los nombres que firman la boleta van en `.env` (`ESCUELA_DIRECTOR` y `ESCUELA_SUBDIRECTOR`).
 
