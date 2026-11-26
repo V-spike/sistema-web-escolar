@@ -6,7 +6,7 @@
 {{-- Rellenar los demás apartados --}}
 @section('contenido')
 <div class="tarjeta tarjeta--login">
-    <div class="marca"><span class="marca__logo">SE</span> Sistema escolar</div>
+    @include('componentes.marca')
     <h1>Crear contraseña nueva</h1>
 
     {{-- Apunta a una ruta con su nombre --}}

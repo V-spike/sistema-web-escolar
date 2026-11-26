@@ -29,6 +29,13 @@ class AccesoTest extends TestCase
         }
     }
 
+    public function test_el_login_muestra_los_datos_de_la_escuela(): void
+    {
+        $this->get('/login')->assertOk()
+            ->assertSee(config('escolar.escuela.nombre'))
+            ->assertSee(config('escolar.escuela.clave'));
+    }
+
     public function test_contrasena_incorrecta(): void
     {
         $this->post('/login', ['email' => 'alumno@escolar.test', 'password' => 'otra'])

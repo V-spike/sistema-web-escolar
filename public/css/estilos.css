@@ -315,3 +315,8 @@ a.bloque:hover { background: var(--superficie); border-color: var(--borde-fuerte
     .solo-imprimir { display: block !important; }
 }
 .solo-imprimir { display: none; }
+
+/* ---------- Nombre de la escuela ---------- */
+.marca__escuela { display: block; font-size: .72rem; font-weight: 400; color: var(--texto-tenue); line-height: 1.3; }
+.pie-escuela { text-align: center; font-size: .75rem; color: var(--texto-tenue); margin-top: 1.25rem; }
+.contenedor-centrado { grid-template-rows: 1fr auto; }
