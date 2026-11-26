@@ -71,15 +71,15 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     Route::get('jornada/{franja}/editar', [JornadaController::class, 'edit'])->name('jornada.edit');
     Route::put('jornada/{franja}', [JornadaController::class, 'update'])->name('jornada.update');
 
+    // HU-10 · Marcos: docentes
+    Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
+    Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
+
+    // HU-08 · Marcos: grupos
+    Route::resource('grupos', GrupoController::class)->except(['show', 'destroy']);
+    Route::patch('grupos/{grupo}/estado', [GrupoController::class, 'cambiarEstado'])->name('grupos.estado');
+
     // HU-13 · Axel: disponibilidad del docente
     Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');
     Route::put('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'update'])->name('docentes.disponibilidad.guardar');
 });
-
-// HU-10 · Marcos
-Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
-Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
-
-// HU-08 · Marcos
-Route::resource('grupos', GrupoController::class)->except(['show', 'destroy']);
-Route::patch('grupos/{grupo}/estado', [GrupoController::class, 'cambiarEstado'])->name('grupos.estado');
