@@ -112,7 +112,42 @@ class CalificacionController extends Controller
             $valores[$c->alumno_id][$c->materia_id] = $c->valor;
         }
 
+        if ($request->query('formato') === 'excel') {
+            return $this->descargarExcel($grupo, $semestre, $parcial, $materias, $alumnos, $valores);
+        }
+
         return view('calificaciones.informe', compact('grupo', 'semestre', 'parcial', 'materias', 'alumnos', 'valores'));
+    }
+
+    /**
+     * El informe como archivo .csv, que Excel abre directo.
+     * Lleva al inicio la marca "BOM" para que Excel lea bien los acentos.
+     */
+    private function descargarExcel(Grupo $grupo, Semestre $semestre, int $parcial, $materias, $alumnos, array $valores)
+    {
+        $escuela = config('escolar.escuela');
+        $archivo = "informe-{$grupo->grado}{$grupo->letra}-parcial{$parcial}.csv";
+
+        return response()->streamDownload(function () use ($escuela, $grupo, $semestre, $parcial, $materias, $alumnos, $valores) {
+            $salida = fopen('php://output', 'w');
+            fwrite($salida, "\xEF\xBB\xBF");
+
+            fputcsv($salida, ['INFORME DE CALIFICACIONES'], ',', '"', '');
+            fputcsv($salida, ['Plantel', $escuela['nombre'] . ' · ' . $escuela['turno'], 'Clave', $escuela['clave']], ',', '"', '');
+            fputcsv($salida, ['Periodo', $semestre->nombre, 'Grupo', $grupo->nombre, 'Parcial', "{$parcial}P"], ',', '"', '');
+            fputcsv($salida, [], ',', '"', '');
+
+            fputcsv($salida, array_merge(['No', 'Nombre', 'Matrícula', 'CURP'], $materias->pluck('clave_corta')->all()), ',', '"', '');
+            foreach ($alumnos as $i => $alumno) {
+                $fila = [$i + 1, mb_strtoupper($alumno->name), $alumno->matricula, $alumno->curp];
+                foreach ($materias as $materia) {
+                    $fila[] = $valores[$alumno->id][$materia->id] ?? '';
+                }
+                fputcsv($salida, $fila, ',', '"', '');
+            }
+
+            fclose($salida);
+        }, $archivo, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     /**

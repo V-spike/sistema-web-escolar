@@ -178,6 +178,22 @@ class CalificacionTest extends TestCase
         $this->get('/panel/calificaciones')->assertForbidden();
     }
 
+    public function test_el_informe_se_descarga_para_excel(): void
+    {
+        $alumno = User::where('email', 'alumno@escolar.test')->first();
+        Calificacion::create(['semestre_id' => Semestre::activo()->id, 'alumno_id' => $alumno->id,
+            'materia_id' => $this->pm->id, 'parcial' => 1, 'valor' => '9.5']);
+
+        $respuesta = $this->actingAs($this->admin())->get("/panel/informes/{$this->grupoA->id}?parcial=1&formato=excel");
+
+        $respuesta->assertOk()->assertDownload('informe-1A-parcial1.csv');
+        $contenido = $respuesta->streamedContent();
+        $this->assertStringContainsString('INFORME DE CALIFICACIONES', $contenido);
+        $this->assertStringContainsString('P.M1', $contenido);
+        $this->assertStringContainsString('ALUMNO DE PRUEBA', $contenido);
+        $this->assertStringContainsString('9.5', $contenido);
+    }
+
     public function test_letra_de_una_calificacion(): void
     {
         $this->assertSame('OCHO PUNTO CINCO', Letra::de(8.5));
