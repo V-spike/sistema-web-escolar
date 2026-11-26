@@ -13,4 +13,4 @@ Para seguir con los horarios necesitamos saber cómo los arma la escuela. Mientr
 
 ## Respuestas
 
-_Pendiente: se anotan aquí cuando el profesor responda._
+- **HU-19 Captura de calificaciones (26/11/2026):** el profesor pidió el módulo: los docentes capturan y editan las calificaciones y los alumnos las consultan, con la estructura de la boleta oficial de la escuela ("BOLETA FORMATO PARCIAL"). Se califica por parciales (I, II y III), de 5 a 10 o NP; Currículum Ampliado con A o N/A.
