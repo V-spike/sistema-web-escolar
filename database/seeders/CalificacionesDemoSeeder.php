@@ -47,7 +47,7 @@ class CalificacionesDemoSeeder extends Seeder
 
     private function valor(Materia $materia, float $nivel): string
     {
-        if ($materia->tipo === 'bloque_comun') {
+        if ($materia->tipo === 'acreditable') {
             return mt_rand(1, 100) <= 92 ? 'A' : 'N/A';
         }
 

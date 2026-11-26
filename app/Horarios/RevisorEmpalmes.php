@@ -3,7 +3,6 @@
 namespace App\Horarios;
 
 use App\Models\Aula;
-use App\Models\BloqueComun;
 use App\Models\Clase;
 use App\Models\Disponibilidad;
 use App\Models\Docente;
@@ -19,7 +18,6 @@ use App\Models\Semestre;
  * Empalmes (no se guarda):
  *  - horas inválidas, fuera de la jornada o encima de un receso
  *  - el grupo, el docente o el aula ya tienen otra clase a esa hora
- *  - el grado tiene un bloque común a esa hora
  *  - el docente no imparte esa materia o no está disponible a esa hora
  *  - la materia no es del grado del grupo, o algo está dado de baja
  *  - el grupo ya completó las horas de la materia o el docente las de su plaza
@@ -83,9 +81,6 @@ class RevisorEmpalmes
         if ((int) $materia->semestre !== (int) $grupo->grado) {
             $r->empalme('materia_grado', "{$materia->nombre} es de {$materia->semestre}.º semestre y el grupo {$grupo->nombre} es de {$grupo->grado}.º.");
         }
-        if ($materia->tipo === 'bloque_comun') {
-            $r->empalme('materia_bloque', "{$materia->nombre} es un bloque común: se acomoda en Bloques comunes para todo el grado, no por grupo.");
-        }
         if (! $docente->materias()->whereKey($materia->id)->exists()) {
             $r->empalme('perfil', "{$docente->nombre_completo} no tiene {$materia->nombre} en su perfil. Agrégala en Docentes si sí la puede dar.");
         }
@@ -121,19 +116,7 @@ class RevisorEmpalmes
             }
         }
 
-        // 5. Bloques comunes del grado
-        $bloques = BloqueComun::with('materia')
-            ->where('semestre_id', $semestre->id)
-            ->where('grado', $grupo->grado)
-            ->where('dia', $dia)
-            ->get();
-        foreach ($bloques as $bloque) {
-            if ($bloque->seEncimaCon($inicio, $fin)) {
-                $r->empalme('bloque_comun', "Todo {$grupo->grado}.º tiene {$bloque->materia->nombre} (bloque común) de {$bloque->rango}.");
-            }
-        }
-
-        // 6. Disponibilidad del docente: la clase completa debe caber en uno de sus rangos
+        // 5. Disponibilidad del docente: la clase completa debe caber en uno de sus rangos
         $rangos = Disponibilidad::where('docente_id', $docente->id)->get();
         if ($rangos->isEmpty()) {
             $r->aviso('sin_disponibilidad', "{$docente->nombre_completo} no ha capturado su disponibilidad; no se pudo comprobar.");
@@ -148,7 +131,7 @@ class RevisorEmpalmes
             }
         }
 
-        // 7. Horas: de la materia para el grupo y de la plaza del docente
+        // 6. Horas: de la materia para el grupo y de la plaza del docente
         $mph = max(1, $jornada->minutos_por_hora);
         $minutos = $fin - $inicio;
 
@@ -169,7 +152,7 @@ class RevisorEmpalmes
                 . Hora::duracion($plaza) . ') y ya tiene ' . Hora::duracion($delDocente) . ' asignadas.');
         }
 
-        // 8. Avisos
+        // 7. Avisos
         if (! $aula) {
             $r->aviso('sin_aula', 'La clase no tiene aula asignada.');
         } elseif ($aula->capacidad < $grupo->capacidad) {

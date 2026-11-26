@@ -3,7 +3,7 @@
 namespace App\Horarios;
 
 /**
- * Para modelos con hora_inicio y hora_fin (clases, recesos, disponibilidad, bloques comunes).
+ * Para modelos con hora_inicio y hora_fin (clases, recesos y disponibilidad).
  */
 trait ConRango
 {

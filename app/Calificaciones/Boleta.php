@@ -24,10 +24,10 @@ class Boleta
         $parciales = range(1, config('escolar.parciales'));
         $grado = $alumno->grupo?->grado;
 
-        // Materias del grado que van en la boleta: primero las normales, al final el bloque común
+        // Materias del grado que van en la boleta: primero las normales, al final las acreditables (C.A.)
         $materias = Materia::where('semestre', $grado)->where('activo', true)
             ->whereIn('tipo', Materia::EN_BOLETA)
-            ->orderByRaw("tipo = 'bloque_comun'")->orderBy('id')->get();
+            ->orderByRaw("tipo = 'acreditable'")->orderBy('id')->get();
 
         $calificaciones = Calificacion::where('semestre_id', $semestre->id)->where('alumno_id', $alumno->id)->get();
 
@@ -40,7 +40,7 @@ class Boleta
             $this->filas[] = $this->fila($materia, $valores);
         }
 
-        // Promedio de cada parcial: solo materias con número (el bloque común no promedia)
+        // Promedio de cada parcial: solo materias con número (las acreditables no promedian)
         foreach ($parciales as $p) {
             $numeros = collect($this->filas)->map(fn ($f) => Calificacion::comoNumero($f['parciales'][$p]))->filter(fn ($n) => $n !== null);
             $this->promedioParcial[$p] = $numeros->isEmpty() ? null : round($numeros->avg(), 1);
@@ -63,7 +63,7 @@ class Boleta
         $final = null;
         $finalTexto = '';
 
-        if ($completa && $materia->tipo === 'bloque_comun') {
+        if ($completa && $materia->tipo === 'acreditable') {
             // Acredita si acreditó el último parcial
             $finalTexto = end($valores);
         } elseif ($completa) {
@@ -77,7 +77,7 @@ class Boleta
             'parciales' => $valores,
             'final' => $final,
             'final_texto' => $finalTexto,
-            'letra' => $materia->tipo === 'bloque_comun'
+            'letra' => $materia->tipo === 'acreditable'
                 ? ($finalTexto === 'A' ? 'ACREDITADO' : ($finalTexto ? 'NO ACREDITADO' : ''))
                 : Letra::de($final),
         ];

@@ -2,7 +2,6 @@
 
 namespace App\Horarios;
 
-use App\Models\BloqueComun;
 use App\Models\Clase;
 use App\Models\Jornada;
 use App\Models\Receso;
@@ -62,24 +61,6 @@ class Semana
                 'tipo' => isset($conProblema[$clase->id]) ? 'problema' : 'clase',
                 'color' => $clase->materia_id % 8,
                 'id' => $clase->id,
-            ]);
-        }
-
-        return $this;
-    }
-
-    /** @param  Collection<BloqueComun>  $bloques */
-    public function conBloquesComunes(Collection $bloques): self
-    {
-        foreach ($bloques as $bloque) {
-            $this->agregar($bloque->dia, $bloque->inicio, $bloque->fin, [
-                'titulo' => $bloque->materia->clave_corta ?: $bloque->materia->nombre,
-                'nombre' => $bloque->materia->nombre,
-                'lineas' => ['Bloque común de ' . $bloque->grado . '.º'],
-                'rango' => $bloque->rango,
-                'tipo' => 'bloque',
-                'color' => 0,
-                'id' => null,
             ]);
         }
 

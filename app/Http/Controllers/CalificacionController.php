@@ -67,7 +67,7 @@ class CalificacionController extends Controller
 
             $valor = Calificacion::normalizar($texto, $materia);
             if ($valor === null) {
-                $errores["valores.{$alumno->id}"] = $materia->tipo === 'bloque_comun'
+                $errores["valores.{$alumno->id}"] = $materia->tipo === 'acreditable'
                     ? "{$alumno->name}: escribe A o N/A."
                     : "{$alumno->name}: escribe un número de 5 a 10 (un decimal) o NP.";
             } else {
@@ -168,7 +168,7 @@ class CalificacionController extends Controller
     private function materiasDelGrado(int $grado)
     {
         return Materia::where('semestre', $grado)->where('activo', true)->whereIn('tipo', Materia::EN_BOLETA)
-            ->orderByRaw("tipo = 'bloque_comun'")->orderBy('id')->get();
+            ->orderByRaw("tipo = 'acreditable'")->orderBy('id')->get();
     }
 
     /** El parcial que se pidió en la dirección (?parcial=2); si no es válido, el 1 */

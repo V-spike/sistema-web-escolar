@@ -15,7 +15,6 @@
             ['Jornada y recesos', 'jornada.index', 'jornada.*'],
             ['Materias', 'materias.index', 'materias.*'],
             ['Aulas', 'aulas.index', 'aulas.*'],
-            ['Bloques comunes', 'bloques-comunes.index', 'bloques-comunes.*'],
         ],
         'Personas' => [
             ['Docentes', 'docentes.index', 'docentes.*'],
