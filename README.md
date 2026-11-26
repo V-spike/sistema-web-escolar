@@ -79,8 +79,8 @@ _to_delete/           Archivos que ya no se usan, con su registro
 ## Roles
 
 - **Superusuario**: todo lo del administrador y además da de alta administradores.
-- **Administrador**: catálogos, horario, docentes (con su cuenta para entrar), grupos, alumnos, calificaciones, informes por grupo y boletas.
-- **Docente**: ve su horario, captura las calificaciones por parcial de los grupos donde da clase e imprime sus boletas.
-- **Alumno**: ve su horario y "Mis calificaciones" (cada materia con sus parciales).
+- **Administrador**: catálogos, horario, docentes (con su cuenta para entrar), grupos, alumnos, calificaciones, conducta, informes por grupo (imprimir o descargar para Excel) y boletas.
+- **Docente**: ve su horario, captura por parcial las calificaciones, faltas y clases impartidas de los grupos donde da clase, la conducta si es tutor del grupo, e imprime sus boletas.
+- **Alumno**: ve su horario y "Mis calificaciones" (cada materia con sus parciales, la final y sus faltas).
 
 Nada se borra de los catálogos: se da de baja y se puede reactivar. El sistema no deja dar de baja algo que todavía tiene clases en el horario.
