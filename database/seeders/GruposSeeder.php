@@ -35,5 +35,15 @@ class GruposSeeder extends Seeder
                 ]
             );
         }
+
+        // En el mismo periodo también cursan 3.º y 5.º (3 grupos cada uno, en el edificio B)
+        $otros = [[3, 'A', 'B-1'], [3, 'B', 'B-2'], [3, 'C', 'B-3'], [5, 'A', 'B-4'], [5, 'B', 'B-5'], [5, 'C', 'B-6']];
+
+        foreach ($otros as [$grado, $letra, $clave]) {
+            Grupo::updateOrCreate(
+                ['semestre_id' => $semestre->id, 'grado' => $grado, 'letra' => $letra],
+                ['aula_id' => Aula::where('clave', $clave)->value('id'), 'capacidad' => 45, 'activo' => true]
+            );
+        }
     }
 }

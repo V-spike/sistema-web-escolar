@@ -71,7 +71,7 @@ class GuardasTest extends TestCase
         $grupo = $this->clase->grupo;
 
         $this->put("/panel/grupos/{$grupo->id}", [
-            'semestre_id' => $grupo->semestre_id, 'grado' => 3, 'letra' => 'A', 'capacidad' => 50,
+            'semestre_id' => $grupo->semestre_id, 'grado' => 2, 'letra' => 'A', 'capacidad' => 50,
         ])->assertSessionHasErrors('grado');
 
         $this->assertSame(1, $grupo->fresh()->grado);

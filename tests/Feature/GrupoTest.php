@@ -56,10 +56,10 @@ class GrupoTest extends TestCase
         $semestre = Semestre::where('activo', true)->first();
 
         $this->actingAs($this->admin())
-            ->post('/panel/grupos', ['semestre_id' => $semestre->id, 'grado' => 3, 'letra' => 'a', 'capacidad' => 40])
+            ->post('/panel/grupos', ['semestre_id' => $semestre->id, 'grado' => 2, 'letra' => 'a', 'capacidad' => 40])
             ->assertRedirect('/panel/grupos');
 
-        $this->assertDatabaseHas('grupos', ['grado' => 3, 'letra' => 'A']);
+        $this->assertDatabaseHas('grupos', ['grado' => 2, 'letra' => 'A']);
     }
 
     public function test_no_se_repite_el_grupo_en_el_mismo_semestre(): void
