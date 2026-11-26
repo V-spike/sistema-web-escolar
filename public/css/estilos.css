@@ -332,18 +332,15 @@ a.bloque:hover { background: var(--superficie); border-color: var(--borde-fuerte
 .btn--secundario:hover { border-color: var(--primario-borde); color: var(--primario); }
 a.enlace:hover { color: var(--primario); }
 
-/* ---------- Login: franja superior con patrón escolar (estilo barra de Word) ---------- */
-/* La franja es un ::before detrás de la tarjeta. El dibujo está en public/img/patron-escolar.svg */
-.contenedor-centrado { position: relative; background: var(--fondo); }
-.contenedor-centrado::before {
-    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 42vh;
-    background-color: var(--primario);
+/* ---------- Fondo del login con patrón escolar ---------- */
+/* El dibujo está en public/img/patron-escolar.svg y se repite como mosaico en todo el fondo */
+.contenedor-centrado {
+    background-color: var(--fondo);
     background-image: url('../img/patron-escolar.svg');
     background-size: 320px 320px;
-    border-bottom: 4px solid var(--acento);
 }
-.contenedor-centrado > * { position: relative; }   /* la tarjeta queda encima de la franja */
-.tarjeta--login { border-top: none; box-shadow: 0 12px 40px rgba(31, 57, 90, .18); }
+.pie-escuela { background: var(--fondo); padding: .25rem .75rem; border-radius: 999px; }
+.tarjeta--login { box-shadow: 0 10px 30px rgba(31, 57, 90, .08); }
 
 /* ---------- Filtros de un listado (buscar, ordenar, mostrar) ---------- */
 .filtros { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: 1rem; }
