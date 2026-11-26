@@ -11,6 +11,7 @@ use App\Http\Controllers\BloqueComunController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\DisponibilidadController;
 use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\CuentaDocenteController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\PanelController;
@@ -91,6 +92,7 @@ Route::middleware(['auth', 'sin-cache', 'rol:administrador,superusuario'])->pref
     // HU-10: docentes
     Route::resource('docentes', DocenteController::class)->except(['show', 'destroy']);
     Route::patch('docentes/{docente}/estado', [DocenteController::class, 'cambiarEstado'])->name('docentes.estado');
+    Route::post('docentes/{docente}/cuenta', [CuentaDocenteController::class, 'guardar'])->name('docentes.cuenta');
 
     // HU-13: disponibilidad del docente (rangos de hora)
     Route::get('docentes/{docente}/disponibilidad', [DisponibilidadController::class, 'edit'])->name('docentes.disponibilidad');

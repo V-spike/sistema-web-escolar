@@ -118,4 +118,35 @@
         <a href="{{ route('docentes.index') }}" class="btn btn--secundario btn--enlace">Cancelar</a>
     </div>
 </form>
+
+{{-- 4. Cuenta para entrar al sistema: es un formulario aparte, se guarda por separado --}}
+@php $cuenta = $docente->usuario; @endphp
+<form method="POST" action="{{ route('docentes.cuenta', $docente) }}" class="formulario">
+    @csrf
+    <fieldset class="formulario__grupo">
+        <legend>Cuenta para entrar</legend>
+        <p class="tenue">
+            @if ($cuenta)
+                Este docente ya entra con <strong>{{ $cuenta->email }}</strong>. Deja la contraseña vacía si no quieres cambiarla.
+            @else
+                Todavía no tiene cuenta. Créala para que pueda ver su horario.
+            @endif
+        </p>
+
+        <label for="cuenta_email" class="campo__etiqueta">Correo de acceso</label>
+        <input id="cuenta_email" name="email" type="email" maxlength="255" value="{{ old('email', $cuenta->email ?? $docente->correo) }}"
+               class="campo @error('email') campo--error @enderror" required>
+        @error('email') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+
+        <label for="cuenta_password" class="campo__etiqueta">Contraseña {{ $cuenta ? 'nueva (opcional)' : '' }}</label>
+        <input id="cuenta_password" name="password" type="password" class="campo @error('password') campo--error @enderror" @required(! $cuenta)>
+        @error('password') <div class="mensaje mensaje--error">{{ $message }}</div> @enderror
+
+        <label for="cuenta_password_confirmation" class="campo__etiqueta">Confirma la contraseña</label>
+        <input id="cuenta_password_confirmation" name="password_confirmation" type="password" class="campo" @required(! $cuenta)>
+    </fieldset>
+    <div class="formulario__acciones">
+        <button type="submit" class="btn btn--primario">{{ $cuenta ? 'Guardar cuenta' : 'Crear cuenta' }}</button>
+    </div>
+</form>
 @endsection

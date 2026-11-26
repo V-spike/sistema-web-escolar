@@ -98,6 +98,9 @@ class DocenteController extends Controller
         $docente->update(collect($datos)->except('materias')->all());
         $docente->materias()->sync($request->input('materias', []));
 
+        // Si tiene cuenta para entrar, su nombre se mantiene igual al del docente
+        $docente->usuario?->update(['name' => $docente->nombre_completo]);
+
         return redirect()->route('docentes.index')->with('estado', 'Docente actualizado correctamente.');
     }
 
@@ -108,6 +111,9 @@ class DocenteController extends Controller
         }
 
         $docente->update(['activo' => ! $docente->activo]);
+
+        // Su cuenta para entrar sigue el mismo estado: si se da de baja, ya no entra
+        $docente->usuario?->update(['activo' => $docente->activo]);
 
         return redirect()->route('docentes.index')->with('estado', 'Estado del docente actualizado.');
     }
