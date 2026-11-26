@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CatalogosSeeder::class);
         $this->call(FranjaSeeder::class);
         $this->call(BloqueComunSeeder::class);
+        $this->call(DocentesSeeder::class);
+        $this->call(GruposSeeder::class);
     }
 }
