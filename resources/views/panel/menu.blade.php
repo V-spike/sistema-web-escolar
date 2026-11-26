@@ -2,52 +2,58 @@
 @php
     $rol = auth()->user()->rol;
 
-    // [texto, nombre de ruta, patrón para resaltar]
+    // Cada opción: [texto, nombre de ruta, patrón para resaltar, ícono]
     $gestion = [
-        'Horario' => [
-            ['Acomodar horario', 'horarios.index', 'horarios.*'],
+        'Horario y calificaciones' => [
+            ['Acomodar horario', 'horarios.index', 'horarios.*', 'horario'],
+            ['Calificaciones', 'calificaciones.index', ['calificaciones.*', 'boletas.*'], 'calificaciones'],
         ],
-        'Calificaciones' => [
-            ['Calificaciones y boletas', 'calificaciones.index', ['calificaciones.*', 'boletas.*']],
-        ],
-        'Escuela' => [
-            ['Semestres', 'semestres.index', 'semestres.*'],
-            ['Jornada y recesos', 'jornada.index', 'jornada.*'],
-            ['Materias', 'materias.index', 'materias.*'],
-            ['Aulas', 'aulas.index', 'aulas.*'],
+        'Catálogos de la escuela' => [
+            ['Semestres', 'semestres.index', 'semestres.*', 'semestres'],
+            ['Jornada y recesos', 'jornada.index', 'jornada.*', 'jornada'],
+            ['Materias', 'materias.index', 'materias.*', 'materias'],
+            ['Aulas', 'aulas.index', 'aulas.*', 'aulas'],
         ],
         'Personas' => [
-            ['Docentes', 'docentes.index', 'docentes.*'],
-            ['Grupos', 'grupos.index', 'grupos.*'],
-            ['Alumnos', 'alumnos.index', 'alumnos.*'],
+            ['Docentes', 'docentes.index', 'docentes.*', 'docentes'],
+            ['Grupos', 'grupos.index', 'grupos.*', 'grupos'],
+            ['Alumnos', 'alumnos.index', 'alumnos.*', 'alumnos'],
         ],
     ];
 
     $secciones = match ($rol) {
-        'superusuario' => array_merge_recursive($gestion, ['Personas' => [['Administradores', 'administradores.index', 'administradores.*']]]),
+        'superusuario' => array_merge_recursive($gestion, ['Personas' => [['Administradores', 'administradores.index', 'administradores.*', 'administradores']]]),
         'administrador' => $gestion,
-        'docente' => ['Escuela' => [['Calificaciones y boletas', 'calificaciones.index', ['calificaciones.*', 'boletas.*']]]],
-        'alumno' => ['Escuela' => [['Mis calificaciones', 'calificaciones.mias', 'calificaciones.mias']]],
+        'docente' => ['Mi trabajo' => [['Calificaciones', 'calificaciones.index', ['calificaciones.*', 'boletas.*'], 'calificaciones']]],
+        'alumno' => ['Mi escuela' => [['Mis calificaciones', 'calificaciones.mias', 'calificaciones.mias', 'calificaciones']]],
         default => [],
     };
 
-    $inicio = match ($rol) {
-        'docente', 'alumno' => 'Mi horario',
-        default => 'Inicio',
-    };
+    // La primera opción: "Inicio" para la administración, "Mi horario" para docentes y alumnos
+    [$inicio, $iconoInicio] = in_array($rol, ['docente', 'alumno'], true) ? ['Mi horario', 'horario'] : ['Inicio', 'inicio'];
 @endphp
 
 <a href="{{ route('panel.' . $rol) }}"
-   @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('panel.*')])>{{ $inicio }}</a>
+   @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('panel.*')])>
+    @include('componentes.icono', ['nombre' => $iconoInicio]) {{ $inicio }}
+</a>
 
 @foreach ($secciones as $titulo => $opciones)
-    <span class="menu__seccion">{{ $titulo }}</span>
-    @foreach ($opciones as [$texto, $ruta, $patron])
-        <a href="{{ route($ruta) }}"
-           @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs($patron)])>{{ $texto }}</a>
-    @endforeach
+    <div class="menu__grupo">
+        <span class="menu__seccion">{{ $titulo }}</span>
+        @foreach ($opciones as [$texto, $ruta, $patron, $icono])
+            <a href="{{ route($ruta) }}"
+               @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs($patron)])>
+                @include('componentes.icono', ['nombre' => $icono]) {{ $texto }}
+            </a>
+        @endforeach
+    </div>
 @endforeach
 
-<span class="menu__seccion">Cuenta</span>
-<a href="{{ route('contrasena.editar') }}"
-   @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('contrasena.editar')])>Cambiar contraseña</a>
+<div class="menu__grupo">
+    <span class="menu__seccion">Cuenta</span>
+    <a href="{{ route('contrasena.editar') }}"
+       @class(['menu__opcion', 'menu__opcion--activa' => request()->routeIs('contrasena.editar')])>
+        @include('componentes.icono', ['nombre' => 'contrasena']) Cambiar contraseña
+    </a>
+</div>
