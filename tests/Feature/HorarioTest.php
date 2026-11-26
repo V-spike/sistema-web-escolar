@@ -171,7 +171,7 @@ class HorarioTest extends TestCase
         // D-009 (Laboratorio de Investigación) solo puede martes y jueves de 15:00 a 19:30
         $this->rechazada([
             'materia_id' => $this->materia('LDI1')->id, 'docente_id' => $this->docente('D-009')->id,
-        ], 'disponibilidad', 'solo está disponible');
+        ], 'disponibilidad', 'no tiene disponibilidad ese día');
 
         $this->rechazada([
             'materia_id' => $this->materia('LDI1')->id, 'docente_id' => $this->docente('D-009')->id,
