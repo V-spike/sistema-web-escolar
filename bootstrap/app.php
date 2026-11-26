@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'sin-cache' => \App\Http\Middleware\SinCache::class,
         ]);
 
+        // Revisa en cada página que la cuenta siga activa
+        $middleware->appendToGroup('web', \App\Http\Middleware\CuentaActiva::class);
+
         // Si alguien con sesión abierta entra a /login, va a su panel.
         // Sin esto Laravel lo manda a "/", que redirige a /login otra vez (bucle).
         $middleware->redirectUsersTo(fn (Request $request) => route('panel.'.$request->user()->rol));

@@ -22,11 +22,12 @@ Route::redirect('/', '/login');
 Route::middleware('guest')->group(function () {
     //ruta -> /login: lo que el usuario ve. 'mostrarLogin' : metodo, 'login' apodo en el codigo
     Route::get('/login', [AccesoController::class, 'mostrarLogin'])->name('login');
-    Route::post('/login', [AccesoController::class, 'entrar']);
+    // throttle:5,1 = máximo 5 intentos por minuto, para que nadie adivine contraseñas a la fuerza
+    Route::post('/login', [AccesoController::class, 'entrar'])->middleware('throttle:5,1');
     Route::get('/olvide-contrasena', [RecuperacionController::class, 'mostrarFormulario'])->name('password.request');
-    Route::post('/olvide-contrasena', [RecuperacionController::class, 'enviarEnlace'])->name('password.email');
+    Route::post('/olvide-contrasena', [RecuperacionController::class, 'enviarEnlace'])->name('password.email')->middleware('throttle:3,1');
     Route::get('/restablecer/{token}', [RecuperacionController::class, 'mostrarRestablecer'])->name('password.reset');
-    Route::post('/restablecer', [RecuperacionController::class, 'restablecer'])->name('password.update');
+    Route::post('/restablecer', [RecuperacionController::class, 'restablecer'])->name('password.update')->middleware('throttle:5,1');
 });
 
 
